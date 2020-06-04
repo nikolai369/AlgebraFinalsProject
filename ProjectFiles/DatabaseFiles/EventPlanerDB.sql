@@ -26,23 +26,23 @@ create table Ticket
 	QRCode nvarchar(max)
 )
 go
-create table [Transaction]
-(
-	TransactionID int primary key identity,
-	TimeOfPurchase datetime,
-	Info nvarchar(200),
-	IDTicket int foreign key references Ticket(TicketID)
-)
-go
 create table [User]
 (
 	UserID int primary key identity,
 	FirstName nvarchar(20),
 	LastName nvarchar(20),
 	Age int,
-	IDTransaction int foreign key references [Transaction](TransactionID),
 	IDCreditCard int foreign key references CreditCard(CreditCardID),
 	IDAvailableFunds int foreign key references AvailableFunds(AvailableFundsID)
+)
+go
+create table [Transaction]
+(
+	TransactionID int primary key identity,
+	TimeOfPurchase datetime,
+	Info nvarchar(200),
+	IDTicket int foreign key references Ticket(TicketID),
+	IDUser int foreign key references [User](UserID)
 )
 go
 create table [Location]
@@ -99,7 +99,8 @@ create table [Event]
 	IDLocation int foreign key references Location(LocationID),
 	IDEventHost int foreign key references EventHost(EventHostID),
 	IDPlaceOfEvent int foreign key references PlaceOfEvent(PlaceOfEventID),
-	IDEventStatistics int foreign key references EventStatistics(EventStatisticsID)
+	IDEventStatistics int foreign key references EventStatistics(EventStatisticsID),
+	IDTicket int foreign key references Ticket(TicketID)
 )
 go
 create table [Admin]
@@ -136,8 +137,8 @@ as
 	insert into [Location] ([State], City, StreetName, Coordinates) values ('Hrvatska', 'Zagreb', 'Ilica 201',geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326)),
 		('Hrvatska', 'Split', 'Pijaca',geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326))
 	insert into Ticket (PriceInKunas, Info, QRCode) values (120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis', 12345667), (60, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis', 123456)
-	insert into [Transaction] (TimeOfPurchase, Info, IDTicket) values ('12:00', 'Lorem Ipsum', 1), ('21:36', 'Lorem Ipsum', 2)
-	insert into [User] (FirstName, LastName, Age, IDTransaction, IDCreditCard, IDAvailableFunds) values ('Ana', 'Anic', 22, 1, 1, 1), ('Matea', 'Mateic', 29, 2, 3, 3)
+	insert into [Transaction] (TimeOfPurchase, Info, IDTicket, IDUser) values ('12:00', 'Lorem Ipsum', 1, 1), ('21:36', 'Lorem Ipsum', 2, 2)
+	insert into [User] (FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values ('Ana', 'Anic', 22, 1, 1), ('Matea', 'Mateic', 29, 3, 3)
 	insert into Review (Info, DateMade, Score, IDUser) values ('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor.',
 		'01-01-2020', 7, 1),
 		('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor.',
@@ -145,15 +146,58 @@ as
 	insert into PlaceOfEvent (Info, IDReview, IDEventHost) values ('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque. In feugiat purus eu euismod feugiat. Phasellus auctor urna nisi, in lacinia arcu vestibulum ac. Etiam vitae porttitor dolor, vel aliquam est. Nam maximus rutrum mi, sit amet tincidunt sem ultricies in. Vestibulum ullamcorper sapien ex, at cursus risus viverra a.',
 		1,1),('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque. In feugiat purus eu euismod feugiat. Phasellus auctor urna nisi, in lacinia arcu vestibulum ac. Etiam vitae porttitor dolor, vel aliquam est. Nam maximus rutrum mi, sit amet tincidunt sem ultricies in. Vestibulum ullamcorper sapien ex, at cursus risus viverra a.',
 		2,2)
-	insert into [Event] (DateOfEvent, TimeOfStart, TimeOfEnd, Info, IDLocation, IDEventHost, IDPlaceOfEvent,IDEventStatistics) 
+	insert into [Event] (DateOfEvent, TimeOfStart, TimeOfEnd, Info, IDLocation, IDEventHost, IDPlaceOfEvent,IDEventStatistics, IDTicket) 
 		values ('01-01-2020', '16:00', '20:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
-		1,1,1,1), ('11-03-2020', '06:00', '22:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
-		2,2,2,1)
+		1,1,1,1,1), ('11-03-2020', '06:00', '22:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
+		2,2,2,1,2)
 	insert into WebPageStatistics (NumberOfSoldTickets, NumberOfGoingUsersToAllEvents, NumberOfInterestedUsersToAllEvents, NumberOfRegisteredEventHosts, NumberOfRegisteredUsers) 
 		values (100, 230, 454, 12, 122)
 go
 
---exec insert_dummy_data
---go
+exec insert_dummy_data
+go
+
 --drop proc insert_dummy_data
 --go
+
+-------------------------------------------------------------
+-- USER
+-- CRUD user
+create proc insert_user
+	@FirstName nvarchar(30),
+	@LastName nvarchar(30),
+	@Age int,
+	@IDCreditCard int, 
+	@IDAvailableFunds int
+as
+	insert into [User] (FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values 
+		(@FirstName, @LastName, @Age, @IDCreditCard, @IDAvailableFunds)
+go
+-- dohvat svih podataka o useru
+create proc select_user_info
+	@UserID int
+as
+	select u.FirstName, u.LastName, u.Age, c.CardName, af.AvailableMoney from [User] as u
+	left join CreditCard as c on c.CreditCardID = u.IDCreditCard
+	left join AvailableFunds as af on af.AvailableFundsID = u.IDAvailableFunds
+	
+
+-- dohvat svih reviewova od usera
+-- dohvat svih transakcija i karata(zajedno) od usera
+-- dohvat dostupne svote nofca usera
+
+--EVENT
+-- CRUD event
+-- pregled svih evenata
+-- dohvat lokacije eventa + place of event(bar/kafic...)
+-- dohvat statistika za odredeni hostov event
+-- dohvat info o hosto za event
+-- dohvat svih info o eventu
+
+--HOST
+-- CRUD host
+-- dohvat dostupne svote nofca hosta
+-- dohvat svih info o hostu
+-- dohvat hostovih placeova(odabere jedan od sojih mogucih za organiziranje eventa)
+-- dohvat svih hostovih evenata
+-------------------------------------------------------------
