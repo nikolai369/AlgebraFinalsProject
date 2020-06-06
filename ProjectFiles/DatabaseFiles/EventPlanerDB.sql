@@ -22,13 +22,15 @@ create table Ticket
 (
 	TicketID int primary key identity,
 	PriceInKunas int,
-	Info nvarchar(100),
+	Info nvarchar(1000),
 	QRCode nvarchar(max)
 )
 go
 create table [User]
 (
 	UserID int primary key identity,
+	Email nvarchar(100),
+	[Password] nvarchar(20),
 	FirstName nvarchar(20),
 	LastName nvarchar(20),
 	Age int,
@@ -40,7 +42,7 @@ create table [Transaction]
 (
 	TransactionID int primary key identity,
 	TimeOfPurchase datetime,
-	Info nvarchar(200),
+	Info nvarchar(1000),
 	IDTicket int foreign key references Ticket(TicketID),
 	IDUser int foreign key references [User](UserID)
 )
@@ -65,10 +67,12 @@ go
 create table EventHost
 (
 	EventHostID int primary key identity,
+	Email nvarchar(100),
+	[Password] nvarchar(20),
 	FirstName nvarchar(30),
 	LastName nvarchar(30),
 	IBAN nvarchar(40),/*max 34*/
-	Info nvarchar(100),
+	Info nvarchar(1000),
 	IDAvailableFunds int foreign key references AvailableFunds(AvailableFundsID)
 	
 )
@@ -134,12 +138,12 @@ as
 	insert into [Admin] (Username,  [Password]) values ('admin', 'admin')
 	insert into AvailableFunds (AvailableMoney) values (100), (124), (1234), (1999)
 	insert into CreditCard (CardName) values ('Mastercard '), ('Visa'), ('American Express')
-	insert into EventHost (FirstName, LastName, IBAN, Info, IDAvailableFunds) values ('Pero', 'Peric', 'HR123456', 'Hosting events since 2001',1), ('Mate', 'Matic', 'HR892649346', 'Best host 2010',2)
+	insert into EventHost (Email, [Password], FirstName, LastName, IBAN, Info, IDAvailableFunds) values ('email@mail.com', 'pass', 'Pero', 'Peric', 'HR123456', 'Hosting events since 2001',1), ('email@mail.com', 'pass', 'Mate', 'Matic', 'HR892649346', 'Best host 2010',2)
 	insert into EventStatistics (NumberOfInterested, NumberOfGoing, NumberOfBoughtTickets) values (1000, 500, 376)
 	insert into [Location] ([State], City, StreetName, Coordinates) values ('Hrvatska', 'Zagreb', 'Ilica 201',geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326)),
 		('Hrvatska', 'Split', 'Pijaca',geography::STGeomFromText('LINESTRING(-122.360 47.656, -122.343 47.656 )', 4326))
 	insert into Ticket (PriceInKunas, Info, QRCode) values (120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis', 12345667), (60, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis', 123456)
-	insert into [User] (FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values ('Ana', 'Anic', 22, 1, 1), ('Matea', 'Mateic', 29, 3, 3)
+	insert into [User] (Email, [Password], FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values ('email@mail.com', 'pass', 'Ana', 'Anic', 22, 1, 1), ('email@mail.com', 'pass', 'Matea', 'Mateic', 29, 3, 3)
 	insert into [Transaction] (TimeOfPurchase, Info, IDTicket, IDUser) values ('12:00', 'Lorem Ipsum', 1, 1), ('21:36', 'Lorem Ipsum', 2, 2)
 	insert into Review (Info, DateMade, Score, IDUser) values ('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor.',
 		'01-01-2020', 7, 1),
@@ -164,14 +168,16 @@ go
 -- CRUD user
 -- C
 create proc insert_user
+	@Email nvarchar(100),
+	@Password nvarchar(20),
 	@FirstName nvarchar(30),
 	@LastName nvarchar(30),
 	@Age int,
 	@IDCreditCard int, 
 	@IDAvailableFunds int
 as
-	insert into [User] (FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values 
-		(@FirstName, @LastName, @Age, @IDCreditCard, @IDAvailableFunds)
+	insert into [User] (Email, [Password], FirstName, LastName, Age, IDCreditCard, IDAvailableFunds) values 
+		(@Email, @Password, @FirstName, @LastName, @Age, @IDCreditCard, @IDAvailableFunds)
 go
 
 -- D
@@ -185,11 +191,13 @@ go
 -- U
 create proc update_user
 	@UserID int,
+	@Email nvarchar(100),
+	@Password nvarchar(20),
 	@FirstName nvarchar(30),
 	@Lastname nvarchar(30),
 	@Age int
 as
-	update [User] set FirstName = @FirstName, LastName = @Lastname, Age = @Age
+	update [User] set Email = @Email, [Password] = @Password, FirstName = @FirstName, LastName = @Lastname, Age = @Age
 		where UserID = @UserID
 go
 
@@ -200,7 +208,7 @@ go
 create proc select_user_info
 	@UserID int
 as
-	select u.FirstName, u.LastName, u.Age, c.CardName, af.AvailableMoney from [User] as u
+	select u.Email, u.FirstName, u.LastName, u.Age, c.CardName, af.AvailableMoney from [User] as u
 	left join CreditCard as c on c.CreditCardID = u.IDCreditCard
 	left join AvailableFunds as af on af.AvailableFundsID = u.IDAvailableFunds
 	where UserID = @UserID
@@ -348,14 +356,16 @@ go
 -- CRUD host
 -- C
 create proc insert_host
+	@Email nvarchar(100),
+	@Password nvarchar(20),
 	@FirstName nvarchar(30),
 	@LastName nvarchar(30),
 	@IBAN nvarchar(40),
-	@Info nvarchar(100),
+	@Info nvarchar(1000),
 	@IDAvailableFunds int
 as
-	insert into EventHost (FirstName, LastName, IBAN, Info, IDAvailableFunds) values 
-		(@FirstName, @LastName, @IBAN, @Info, @IDAvailableFunds)
+	insert into EventHost (Email, [Password], FirstName, LastName, IBAN, Info, IDAvailableFunds) values 
+		(@Email, @Password, @FirstName, @LastName, @IBAN, @Info, @IDAvailableFunds)
 go
 
 -- D
@@ -369,13 +379,15 @@ go
 -- U
 create proc update_host
 	@EventHostID int,
+	@Email nvarchar(100),
+	@Password nvarchar(20),
 	@FirstName nvarchar(30),
 	@LastName nvarchar(30),
 	@IBAN nvarchar(40),
-	@Info nvarchar(100),
+	@Info nvarchar(1000),
 	@IDAvailableFunds int
 as
-	update EventHost set FirstName = @FirstName, LastName = @LastName, IBAN = @IBAN, Info = @Info, IDAvailableFunds = @IDAvailableFunds
+	update EventHost set Email = @Email, [Password] = @Password, FirstName = @FirstName, LastName = @LastName, IBAN = @IBAN, Info = @Info, IDAvailableFunds = @IDAvailableFunds
 		where EventHostID = @EventHostID
 go
 
@@ -384,7 +396,7 @@ go
 create proc select_host_info
 	@EventHostID int
 as
-	select eh.FirstName, eh.LastName, eh.Info from EventHost as eh
+	select eh.Email, eh.FirstName, eh.LastName, eh.Info from EventHost as eh
 	where EventHostID = @EventHostID
 go
 
@@ -420,7 +432,7 @@ go
 --C
 create proc insert_placeofevent
 	@PlaceName nvarchar(100),
-	@Info nvarchar(200),
+	@Info nvarchar(1000),
 	@IDReview int,
 	@IDEventHost int
 as
@@ -432,7 +444,7 @@ go
 create proc update_placeofevent
 	@PlaceOfEventID int,
 	@PlaceName nvarchar(100),
-	@Info nvarchar(200),
+	@Info nvarchar(1000),
 	@IDReview int,
 	@IDEventHost int
 as
@@ -452,7 +464,7 @@ go
 -- C
 create proc insert_ticket
 	@PriceInKunas money,
-	@Info nvarchar(100),
+	@Info nvarchar(1000),
 	@QRCode nvarchar(40)
 as 
 	insert into Ticket (PriceInKunas, Info, QRCode) values (@PriceInKunas, @Info, @QRCode)
@@ -576,7 +588,7 @@ go
 --C
 create proc insert_transaction
 	@TimeOfPurchase datetime,
-	@Info nvarchar(200),
+	@Info nvarchar(1000),
 	@IDTicket int,
 	@IDUser int
 as
@@ -588,7 +600,7 @@ go
 create proc update_transaction
 	@TransactionID int,
 	@TimeOfPurchase datetime,
-	@Info nvarchar(200),
+	@Info nvarchar(1000),
 	@IDTicket int,
 	@IDUser int
 as
