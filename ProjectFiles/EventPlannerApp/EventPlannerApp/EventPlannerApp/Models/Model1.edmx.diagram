@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="db9e5fb500d648ee97536a25631b215d" Name="Diagram1">
+        <EntityTypeShape EntityType="EventPlannerDBModel.Admin" Width="1.5" PointX="10.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.AvailableFunds" Width="1.5" PointX="0.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.CreditCard" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Event" Width="1.5" PointX="5.25" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.EventHost" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.EventStatistics" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Location" Width="1.5" PointX="3" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.PlaceOfEvent" Width="1.5" PointX="8.25" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Review" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.sysdiagrams" Width="1.5" PointX="10.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Ticket" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Transaction" Width="1.5" PointX="8.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.User" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.WebPageStatistics" Width="1.5" PointX="13" PointY="2.5" IsExpanded="true" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__WebPageSt__IDAdm__47DBAE45" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__EventHost__IDAva__35BCFE0A" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__User__IDAvailabl__2B3F6F97" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__User__IDCreditCa__2A4B4B5E" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDEventHo__403A8C7D" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDEventSt__4222D4EF" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDLocatio__3F466844" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDPlaceOf__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDTicket__4316F928" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__PlaceOfEv__IDEve__3C69FB99" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__PlaceOfEv__IDRev__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Review__IDUser__38996AB5" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Transacti__IDTic__2E1BDC42" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Transacti__IDUse__2F10007B" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
