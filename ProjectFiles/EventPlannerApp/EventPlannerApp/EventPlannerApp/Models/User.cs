@@ -11,7 +11,9 @@ namespace EventPlannerApp.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,8 +24,16 @@ namespace EventPlannerApp.Models
         }
     
         public int UserID { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
+
+        [DataType(DataType.Password)]
+        [DisplayName ("Confirm Password")]
+        public string ConfirmPassword { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Nullable<int> Age { get; set; }
@@ -36,5 +46,8 @@ namespace EventPlannerApp.Models
         public virtual ICollection<Review> Review { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transaction { get; set; }
+
+
+        public string LoginErrorMassage { get; set; }
     }
 }

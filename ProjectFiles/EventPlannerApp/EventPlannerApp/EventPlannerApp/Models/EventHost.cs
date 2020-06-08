@@ -11,7 +11,9 @@ namespace EventPlannerApp.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class EventHost
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,8 +24,13 @@ namespace EventPlannerApp.Models
         }
     
         public int EventHostID { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
         public string Password { get; set; }
+        [DataType(DataType.Password)]
+        [DisplayName("Confirm Password")]
+        public string ConfirmPassword { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string IBAN { get; set; }
@@ -35,5 +42,7 @@ namespace EventPlannerApp.Models
         public virtual ICollection<Event> Event { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PlaceOfEvent> PlaceOfEvent { get; set; }
+
+        public string LoginErrorMassage { get; set; }
     }
 }

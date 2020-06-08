@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="db9e5fb500d648ee97536a25631b215d" Name="Diagram1">
+      <Diagram DiagramId="9b68dfe71edb428f92c8e10e9026512b" Name="Diagram1">
         <EntityTypeShape EntityType="EventPlannerDBModel.Admin" Width="1.5" PointX="10.75" PointY="3.375" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.AvailableFunds" Width="1.5" PointX="0.75" PointY="9" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.CreditCard" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />

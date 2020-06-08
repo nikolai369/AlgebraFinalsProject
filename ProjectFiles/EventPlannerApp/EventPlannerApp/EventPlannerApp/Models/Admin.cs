@@ -11,7 +11,8 @@ namespace EventPlannerApp.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Admin
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,9 +22,14 @@ namespace EventPlannerApp.Models
         }
     
         public int AdminID { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
         public string Username { get; set; }
+        [Required(ErrorMessage = "Field Required!")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
-    
+
+        public string LoginErrorMassage { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WebPageStatistics> WebPageStatistics { get; set; }
     }
