@@ -81,3 +81,5 @@ C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPl
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\obj\Debug\EventPlannerApp.csproj.CopyComplete
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\obj\Debug\EventPlannerApp.dll
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\obj\Debug\EventPlannerApp.pdb
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Net.Http.Formatting.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Net.Http.Formatting.xml

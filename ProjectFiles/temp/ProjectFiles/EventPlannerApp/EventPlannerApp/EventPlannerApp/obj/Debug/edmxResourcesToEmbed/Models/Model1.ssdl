@@ -1,0 +1,617 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EventPlannerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Admin">
+    <Key>
+      <PropertyRef Name="AdminID" />
+    </Key>
+    <Property Name="AdminID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="30" />
+    <Property Name="Password" Type="nvarchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="AvailableFunds">
+    <Key>
+      <PropertyRef Name="AvailableFundsID" />
+    </Key>
+    <Property Name="AvailableFundsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AvailableMoney" Type="money" />
+  </EntityType>
+  <EntityType Name="CreditCard">
+    <Key>
+      <PropertyRef Name="CreditCardID" />
+    </Key>
+    <Property Name="CreditCardID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CardName" Type="nvarchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="Event">
+    <Key>
+      <PropertyRef Name="EventID" />
+    </Key>
+    <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EventName" Type="nvarchar" MaxLength="200" />
+    <Property Name="DateOfEvent" Type="date" />
+    <Property Name="TimeOfStart" Type="time" Precision="7" />
+    <Property Name="TimeOfEnd" Type="time" Precision="7" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IDLocation" Type="int" />
+    <Property Name="IDEventHost" Type="int" />
+    <Property Name="IDPlaceOfEvent" Type="int" />
+    <Property Name="IDEventStatistics" Type="int" />
+    <Property Name="IDTicket" Type="int" />
+  </EntityType>
+  <EntityType Name="EventHost">
+    <Key>
+      <PropertyRef Name="EventHostID" />
+    </Key>
+    <Property Name="EventHostID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="30" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="30" />
+    <Property Name="IBAN" Type="nvarchar" MaxLength="40" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IDAvailableFunds" Type="int" />
+  </EntityType>
+  <EntityType Name="EventStatistics">
+    <Key>
+      <PropertyRef Name="EventStatisticsID" />
+    </Key>
+    <Property Name="EventStatisticsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NumberOfInterested" Type="int" />
+    <Property Name="NumberOfGoing" Type="int" />
+    <Property Name="NumberOfBoughtTickets" Type="int" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="LocationID" />
+    </Key>
+    <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="State" Type="nvarchar" MaxLength="30" />
+    <Property Name="City" Type="nvarchar" MaxLength="40" />
+    <Property Name="StreetName" Type="nvarchar" MaxLength="40" />
+    <Property Name="Coordinates" Type="geography" />
+  </EntityType>
+  <EntityType Name="PlaceOfEvent">
+    <Key>
+      <PropertyRef Name="PlaceOfEventID" />
+    </Key>
+    <Property Name="PlaceOfEventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PlaceName" Type="nvarchar" MaxLength="100" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IDReview" Type="int" />
+    <Property Name="IDEventHost" Type="int" />
+  </EntityType>
+  <EntityType Name="Review">
+    <Key>
+      <PropertyRef Name="ReviewID" />
+    </Key>
+    <Property Name="ReviewID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="DateMade" Type="datetime" />
+    <Property Name="Score" Type="float" />
+    <Property Name="IDUser" Type="int" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Ticket">
+    <Key>
+      <PropertyRef Name="TicketID" />
+    </Key>
+    <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PriceInKunas" Type="int" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="QRCode" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Transaction">
+    <Key>
+      <PropertyRef Name="TransactionID" />
+    </Key>
+    <Property Name="TransactionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TimeOfPurchase" Type="datetime" />
+    <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IDTicket" Type="int" />
+    <Property Name="IDUser" Type="int" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="20" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="20" />
+    <Property Name="Age" Type="int" />
+    <Property Name="IDCreditCard" Type="int" />
+    <Property Name="IDAvailableFunds" Type="int" />
+  </EntityType>
+  <EntityType Name="WebPageStatistics">
+    <Key>
+      <PropertyRef Name="WebPageStatisticsID" />
+    </Key>
+    <Property Name="WebPageStatisticsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NumberOfSoldTickets" Type="int" />
+    <Property Name="NumberOfGoingUsersToAllEvents" Type="int" />
+    <Property Name="NumberOfInterestedUsersToAllEvents" Type="int" />
+    <Property Name="NumberOfEventsMade" Type="int" />
+    <Property Name="NumberOfRegisteredUsers" Type="int" />
+    <Property Name="NumberOfRegisteredEventHosts" Type="int" />
+    <Property Name="TotalBalanceFromSoldTickets" Type="money" />
+    <Property Name="AvgTicketsSoldByDay" Type="float" />
+    <Property Name="AvgTicketsSoldByWeek" Type="float" />
+    <Property Name="AvgTicketsSoldByMonth" Type="float" />
+    <Property Name="IDAdmin" Type="int" />
+  </EntityType>
+  <Association Name="FK__Event__IDEventHo__403A8C7D">
+    <End Role="EventHost" Type="Self.EventHost" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EventHost">
+        <PropertyRef Name="EventHostID" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="IDEventHost" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Event__IDEventSt__4222D4EF">
+    <End Role="EventStatistics" Type="Self.EventStatistics" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EventStatistics">
+        <PropertyRef Name="EventStatisticsID" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="IDEventStatistics" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Event__IDLocatio__3F466844">
+    <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Location">
+        <PropertyRef Name="LocationID" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="IDLocation" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Event__IDPlaceOf__412EB0B6">
+    <End Role="PlaceOfEvent" Type="Self.PlaceOfEvent" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PlaceOfEvent">
+        <PropertyRef Name="PlaceOfEventID" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="IDPlaceOfEvent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Event__IDTicket__4316F928">
+    <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ticket">
+        <PropertyRef Name="TicketID" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="IDTicket" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__EventHost__IDAva__35BCFE0A">
+    <End Role="AvailableFunds" Type="Self.AvailableFunds" Multiplicity="0..1" />
+    <End Role="EventHost" Type="Self.EventHost" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AvailableFunds">
+        <PropertyRef Name="AvailableFundsID" />
+      </Principal>
+      <Dependent Role="EventHost">
+        <PropertyRef Name="IDAvailableFunds" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PlaceOfEv__IDEve__3C69FB99">
+    <End Role="EventHost" Type="Self.EventHost" Multiplicity="0..1" />
+    <End Role="PlaceOfEvent" Type="Self.PlaceOfEvent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EventHost">
+        <PropertyRef Name="EventHostID" />
+      </Principal>
+      <Dependent Role="PlaceOfEvent">
+        <PropertyRef Name="IDEventHost" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PlaceOfEv__IDRev__3B75D760">
+    <End Role="Review" Type="Self.Review" Multiplicity="0..1" />
+    <End Role="PlaceOfEvent" Type="Self.PlaceOfEvent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Review">
+        <PropertyRef Name="ReviewID" />
+      </Principal>
+      <Dependent Role="PlaceOfEvent">
+        <PropertyRef Name="IDReview" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Review__IDUser__38996AB5">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Review" Type="Self.Review" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Review">
+        <PropertyRef Name="IDUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Transacti__IDTic__2E1BDC42">
+    <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ticket">
+        <PropertyRef Name="TicketID" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="IDTicket" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Transacti__IDUse__2F10007B">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Transaction">
+        <PropertyRef Name="IDUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__User__IDAvailabl__2B3F6F97">
+    <End Role="AvailableFunds" Type="Self.AvailableFunds" Multiplicity="0..1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AvailableFunds">
+        <PropertyRef Name="AvailableFundsID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="IDAvailableFunds" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__User__IDCreditCa__2A4B4B5E">
+    <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="0..1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CreditCard">
+        <PropertyRef Name="CreditCardID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="IDCreditCard" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WebPageSt__IDAdm__47DBAE45">
+    <End Role="Admin" Type="Self.Admin" Multiplicity="0..1" />
+    <End Role="WebPageStatistics" Type="Self.WebPageStatistics" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Admin">
+        <PropertyRef Name="AdminID" />
+      </Principal>
+      <Dependent Role="WebPageStatistics">
+        <PropertyRef Name="IDAdmin" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="clean_eventplannerdb" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="delete_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_host" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_location" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="LocationID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_placeofevent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PlaceOfEventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TicketID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_transaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TransacitionID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="delete_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="insert_dummy_data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="insert_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventName" Type="nvarchar" Mode="In" />
+    <Parameter Name="DateOfEvent" Type="date" Mode="In" />
+    <Parameter Name="TimeOfStart" Type="time" Mode="In" />
+    <Parameter Name="TimeOfEnd" Type="time" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDLocation" Type="int" Mode="In" />
+    <Parameter Name="IDEventHost" Type="int" Mode="In" />
+    <Parameter Name="IDPlaceOfEvent" Type="int" Mode="In" />
+    <Parameter Name="IDEventStatistics" Type="int" Mode="In" />
+    <Parameter Name="IDTicket" Type="int" Mode="In" />
+  </Function>
+  <Function Name="insert_funds" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="AvailableMoney" Type="money" Mode="In" />
+  </Function>
+  <Function Name="insert_host" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Email" Type="nvarchar" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar" Mode="In" />
+    <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+    <Parameter Name="LastName" Type="nvarchar" Mode="In" />
+    <Parameter Name="IBAN" Type="nvarchar" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDAvailableFunds" Type="int" Mode="In" />
+  </Function>
+  <Function Name="insert_location" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="State" Type="nvarchar" Mode="In" />
+    <Parameter Name="City" Type="nvarchar" Mode="In" />
+    <Parameter Name="StreetName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Coordinates" Type="geography" Mode="In" />
+  </Function>
+  <Function Name="insert_placeofevent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PlaceName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDReview" Type="int" Mode="In" />
+    <Parameter Name="IDEventHost" Type="int" Mode="In" />
+  </Function>
+  <Function Name="insert_review" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="DateMade" Type="datetime" Mode="In" />
+    <Parameter Name="Score" Type="int" Mode="In" />
+    <Parameter Name="IDUser" Type="int" Mode="In" />
+  </Function>
+  <Function Name="insert_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PriceInKunas" Type="money" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="QRCode" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="insert_transaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TimeOfPurchase" Type="datetime" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDTicket" Type="int" Mode="In" />
+    <Parameter Name="IDUser" Type="int" Mode="In" />
+  </Function>
+  <Function Name="insert_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Email" Type="nvarchar" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar" Mode="In" />
+    <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+    <Parameter Name="LastName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Age" Type="int" Mode="In" />
+    <Parameter Name="IDCreditCard" Type="int" Mode="In" />
+    <Parameter Name="IDAvailableFunds" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_all_events" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="select_all_hosts_events" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_all_hosts_placeofevent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_all_reviews_by_user_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_event_info" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_event_location" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_event_statistics_by_host" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_host_account_balance" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_host_by_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_host_info" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_location_info" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="LocationID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_review_by_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_review_for_placeofevent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PlaceOfEventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TicketID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_ticket_info_for_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_user_account_balance" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_user_info" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_user_transactions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="select_webpage_statistics" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="update_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventID" Type="int" Mode="In" />
+    <Parameter Name="EventName" Type="nvarchar" Mode="In" />
+    <Parameter Name="DateOfEvent" Type="date" Mode="In" />
+    <Parameter Name="TimeOfStart" Type="time" Mode="In" />
+    <Parameter Name="TimeOfEnd" Type="time" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDLocation" Type="int" Mode="In" />
+    <Parameter Name="IDEventHost" Type="int" Mode="In" />
+    <Parameter Name="IDPlaceOfEvent" Type="int" Mode="In" />
+    <Parameter Name="IDEventStatistics" Type="int" Mode="In" />
+    <Parameter Name="IDTicket" Type="int" Mode="In" />
+  </Function>
+  <Function Name="update_funds" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="AvailableFundsID" Type="int" Mode="In" />
+    <Parameter Name="AvailableMoney" Type="money" Mode="In" />
+  </Function>
+  <Function Name="update_host" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="EventHostID" Type="int" Mode="In" />
+    <Parameter Name="Email" Type="nvarchar" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar" Mode="In" />
+    <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+    <Parameter Name="LastName" Type="nvarchar" Mode="In" />
+    <Parameter Name="IBAN" Type="nvarchar" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDAvailableFunds" Type="int" Mode="In" />
+  </Function>
+  <Function Name="update_location" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="LocationID" Type="int" Mode="In" />
+    <Parameter Name="State" Type="nvarchar" Mode="In" />
+    <Parameter Name="City" Type="nvarchar" Mode="In" />
+    <Parameter Name="StreetName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Coordinates" Type="geography" Mode="In" />
+  </Function>
+  <Function Name="update_placeofevent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PlaceOfEventID" Type="int" Mode="In" />
+    <Parameter Name="PlaceName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDReview" Type="int" Mode="In" />
+    <Parameter Name="IDEventHost" Type="int" Mode="In" />
+  </Function>
+  <Function Name="update_transaction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TransactionID" Type="int" Mode="In" />
+    <Parameter Name="TimeOfPurchase" Type="datetime" Mode="In" />
+    <Parameter Name="Info" Type="nvarchar" Mode="In" />
+    <Parameter Name="IDTicket" Type="int" Mode="In" />
+    <Parameter Name="IDUser" Type="int" Mode="In" />
+  </Function>
+  <Function Name="update_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="UserID" Type="int" Mode="In" />
+    <Parameter Name="Email" Type="nvarchar" Mode="In" />
+    <Parameter Name="Password" Type="nvarchar" Mode="In" />
+    <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+    <Parameter Name="Lastname" Type="nvarchar" Mode="In" />
+    <Parameter Name="Age" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="EventPlannerDBModelStoreContainer">
+    <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AvailableFunds" EntityType="Self.AvailableFunds" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CreditCard" EntityType="Self.CreditCard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EventHost" EntityType="Self.EventHost" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EventStatistics" EntityType="Self.EventStatistics" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PlaceOfEvent" EntityType="Self.PlaceOfEvent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Review" EntityType="Self.Review" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WebPageStatistics" EntityType="Self.WebPageStatistics" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Event__IDEventHo__403A8C7D" Association="Self.FK__Event__IDEventHo__403A8C7D">
+      <End Role="EventHost" EntitySet="EventHost" />
+      <End Role="Event" EntitySet="Event" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Event__IDEventSt__4222D4EF" Association="Self.FK__Event__IDEventSt__4222D4EF">
+      <End Role="EventStatistics" EntitySet="EventStatistics" />
+      <End Role="Event" EntitySet="Event" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Event__IDLocatio__3F466844" Association="Self.FK__Event__IDLocatio__3F466844">
+      <End Role="Location" EntitySet="Location" />
+      <End Role="Event" EntitySet="Event" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Event__IDPlaceOf__412EB0B6" Association="Self.FK__Event__IDPlaceOf__412EB0B6">
+      <End Role="PlaceOfEvent" EntitySet="PlaceOfEvent" />
+      <End Role="Event" EntitySet="Event" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Event__IDTicket__4316F928" Association="Self.FK__Event__IDTicket__4316F928">
+      <End Role="Ticket" EntitySet="Ticket" />
+      <End Role="Event" EntitySet="Event" />
+    </AssociationSet>
+    <AssociationSet Name="FK__EventHost__IDAva__35BCFE0A" Association="Self.FK__EventHost__IDAva__35BCFE0A">
+      <End Role="AvailableFunds" EntitySet="AvailableFunds" />
+      <End Role="EventHost" EntitySet="EventHost" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PlaceOfEv__IDEve__3C69FB99" Association="Self.FK__PlaceOfEv__IDEve__3C69FB99">
+      <End Role="EventHost" EntitySet="EventHost" />
+      <End Role="PlaceOfEvent" EntitySet="PlaceOfEvent" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PlaceOfEv__IDRev__3B75D760" Association="Self.FK__PlaceOfEv__IDRev__3B75D760">
+      <End Role="Review" EntitySet="Review" />
+      <End Role="PlaceOfEvent" EntitySet="PlaceOfEvent" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Review__IDUser__38996AB5" Association="Self.FK__Review__IDUser__38996AB5">
+      <End Role="User" EntitySet="User" />
+      <End Role="Review" EntitySet="Review" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
+      <End Role="Ticket" EntitySet="Ticket" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Transacti__IDUse__2F10007B" Association="Self.FK__Transacti__IDUse__2F10007B">
+      <End Role="User" EntitySet="User" />
+      <End Role="Transaction" EntitySet="Transaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK__User__IDAvailabl__2B3F6F97" Association="Self.FK__User__IDAvailabl__2B3F6F97">
+      <End Role="AvailableFunds" EntitySet="AvailableFunds" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+    <AssociationSet Name="FK__User__IDCreditCa__2A4B4B5E" Association="Self.FK__User__IDCreditCa__2A4B4B5E">
+      <End Role="CreditCard" EntitySet="CreditCard" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WebPageSt__IDAdm__47DBAE45" Association="Self.FK__WebPageSt__IDAdm__47DBAE45">
+      <End Role="Admin" EntitySet="Admin" />
+      <End Role="WebPageStatistics" EntitySet="WebPageStatistics" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

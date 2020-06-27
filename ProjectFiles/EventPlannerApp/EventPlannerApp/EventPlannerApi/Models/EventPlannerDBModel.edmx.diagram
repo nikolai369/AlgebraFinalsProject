@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4db1f8b9b5ce41ddb8a0afac7bf2ac90" Name="Diagram1">
+        <EntityTypeShape EntityType="EventPlannerDBModel.AvailableFunds" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.CreditCard" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Event" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Location" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Ticket" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Transaction" Width="1.5" PointX="8.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.User" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__User__IDAvailabl__2B3F6F97" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__User__IDCreditCa__2A4B4B5E" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDLocatio__34C8D9D1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDTicket__35BCFE0A" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDUser__33D4B598" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Transacti__IDTic__2E1BDC42" ManuallyRouted="false" />
+        <AssociationConnector Association="EventPlannerDBModel.FK__Transacti__IDUse__2F10007B" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
