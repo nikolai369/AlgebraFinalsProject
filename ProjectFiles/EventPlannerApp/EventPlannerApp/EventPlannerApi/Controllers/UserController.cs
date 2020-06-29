@@ -14,7 +14,7 @@ namespace EventPlannerApi.Controllers
 {
     public class UserController : ApiController
     {
-        private EventPlannerDBEntities1 db = new EventPlannerDBEntities1();
+        private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/User
         public IQueryable<User> GetUser()

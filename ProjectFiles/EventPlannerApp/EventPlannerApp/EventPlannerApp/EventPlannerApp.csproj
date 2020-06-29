@@ -139,6 +139,7 @@
     <Compile Include="Models\AvailableFunds.cs" />
     <Compile Include="Models\CreditCard.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Going.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\Transaction.cs" />

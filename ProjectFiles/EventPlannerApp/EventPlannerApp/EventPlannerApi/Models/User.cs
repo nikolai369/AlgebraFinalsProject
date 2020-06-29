@@ -18,6 +18,7 @@ namespace EventPlannerApi.Models
         public User()
         {
             this.Event = new HashSet<Event>();
+            this.Going = new HashSet<Going>();
             this.Transaction = new HashSet<Transaction>();
         }
     
@@ -37,6 +38,8 @@ namespace EventPlannerApi.Models
         public virtual CreditCard CreditCard { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Event> Event { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Going> Going { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transaction { get; set; }
     }

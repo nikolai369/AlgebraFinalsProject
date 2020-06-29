@@ -14,7 +14,7 @@ namespace EventPlannerApi.Controllers
 {
     public class EventController : ApiController
     {
-        private EventPlannerDBEntities1 db = new EventPlannerDBEntities1();
+        private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Event
         public IQueryable<Event> GetEvent()

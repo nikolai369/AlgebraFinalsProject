@@ -31,6 +31,17 @@
     <NavigationProperty Name="Location" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Event" ToRole="Location" />
     <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
     <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
+    <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
+  </EntityType>
+  <EntityType Name="Going">
+    <Key>
+      <PropertyRef Name="GoingID" />
+    </Key>
+    <Property Name="GoingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IDUser" Type="Int32" />
+    <Property Name="IDEvent" Type="Int32" />
+    <NavigationProperty Name="Event" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Going" ToRole="Event" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="Going" ToRole="User" />
   </EntityType>
   <EntityType Name="Location">
     <Key>
@@ -40,16 +51,6 @@
     <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
     <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-  </EntityType>
-  <EntityType Name="sysdiagrams">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="principal_id" Type="Int32" Nullable="false" />
-    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
   </EntityType>
   <EntityType Name="Ticket">
     <Key>
@@ -91,6 +92,7 @@
     <NavigationProperty Name="AvailableFunds" Relationship="Self.FK__User__IDAvailabl__2B3F6F97" FromRole="User" ToRole="AvailableFunds" />
     <NavigationProperty Name="CreditCard" Relationship="Self.FK__User__IDCreditCa__2A4B4B5E" FromRole="User" ToRole="CreditCard" />
     <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="User" ToRole="Event" />
+    <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="User" ToRole="Going" />
     <NavigationProperty Name="Transaction" Relationship="Self.FK__Transacti__IDUse__2F10007B" FromRole="User" ToRole="Transaction" />
   </EntityType>
   <Association Name="FK__User__IDAvailabl__2B3F6F97">
@@ -153,6 +155,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Going__IDEvent__398D8EEE">
+    <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+    <End Role="Going" Type="Self.Going" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="EventID" />
+      </Principal>
+      <Dependent Role="Going">
+        <PropertyRef Name="IDEvent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Going__IDUser__38996AB5">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Going" Type="Self.Going" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Going">
+        <PropertyRef Name="IDUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__Transacti__IDTic__2E1BDC42">
     <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
     <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -177,12 +203,12 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="EventPlannerDBEntities1" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="EventPlannerDBEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="AvailableFunds" EntityType="Self.AvailableFunds" />
     <EntitySet Name="CreditCard" EntityType="Self.CreditCard" />
     <EntitySet Name="Event" EntityType="Self.Event" />
+    <EntitySet Name="Going" EntityType="Self.Going" />
     <EntitySet Name="Location" EntityType="Self.Location" />
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
     <EntitySet Name="Ticket" EntityType="Self.Ticket" />
     <EntitySet Name="Transaction" EntityType="Self.Transaction" />
     <EntitySet Name="User" EntityType="Self.User" />
@@ -206,6 +232,14 @@
       <End Role="User" EntitySet="User" />
       <End Role="Event" EntitySet="Event" />
     </AssociationSet>
+    <AssociationSet Name="FK__Going__IDEvent__398D8EEE" Association="Self.FK__Going__IDEvent__398D8EEE">
+      <End Role="Event" EntitySet="Event" />
+      <End Role="Going" EntitySet="Going" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Going__IDUser__38996AB5" Association="Self.FK__Going__IDUser__38996AB5">
+      <End Role="User" EntitySet="User" />
+      <End Role="Going" EntitySet="Going" />
+    </AssociationSet>
     <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
       <End Role="Ticket" EntitySet="Ticket" />
       <End Role="Transaction" EntitySet="Transaction" />
@@ -215,46 +249,5 @@
       <End Role="Transaction" EntitySet="Transaction" />
     </AssociationSet>
     <FunctionImport Name="insert_dummy_data" />
-    <FunctionImport Name="sp_alterdiagram">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-      <Parameter Name="version" Mode="In" Type="Int32" />
-      <Parameter Name="definition" Mode="In" Type="Binary" />
-    </FunctionImport>
-    <FunctionImport Name="sp_creatediagram">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-      <Parameter Name="version" Mode="In" Type="Int32" />
-      <Parameter Name="definition" Mode="In" Type="Binary" />
-    </FunctionImport>
-    <FunctionImport Name="sp_dropdiagram">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-    </FunctionImport>
-    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(EventPlannerDBModel.sp_helpdiagramdefinition_Result)">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-    </FunctionImport>
-    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(EventPlannerDBModel.sp_helpdiagrams_Result)">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-    </FunctionImport>
-    <FunctionImport Name="sp_renamediagram">
-      <Parameter Name="diagramname" Mode="In" Type="String" />
-      <Parameter Name="owner_id" Mode="In" Type="Int32" />
-      <Parameter Name="new_diagramname" Mode="In" Type="String" />
-    </FunctionImport>
-    <FunctionImport Name="sp_upgraddiagrams" />
   </EntityContainer>
-  <ComplexType Name="sp_helpdiagramdefinition_Result">
-    <Property Type="Int32" Name="version" Nullable="true" />
-    <Property Type="Binary" Name="definition" Nullable="true" />
-  </ComplexType>
-  <ComplexType Name="sp_helpdiagrams_Result">
-    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-    <Property Type="Int32" Name="ID" Nullable="false" />
-    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-    <Property Type="Int32" Name="OwnerID" Nullable="false" />
-  </ComplexType>
 </Schema>

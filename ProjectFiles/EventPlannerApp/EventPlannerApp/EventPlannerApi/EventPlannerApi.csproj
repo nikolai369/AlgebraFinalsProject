@@ -197,16 +197,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EventPlannerDBModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Going.cs">
+      <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Location.cs">
-      <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Ticket.cs">

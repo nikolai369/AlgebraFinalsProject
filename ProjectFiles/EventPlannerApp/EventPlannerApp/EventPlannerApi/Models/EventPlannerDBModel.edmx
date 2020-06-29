@@ -32,6 +32,14 @@
           <Property Name="IDLocation" Type="int" />
           <Property Name="IDTicket" Type="int" />
         </EntityType>
+        <EntityType Name="Going">
+          <Key>
+            <PropertyRef Name="GoingID" />
+          </Key>
+          <Property Name="GoingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDUser" Type="int" />
+          <Property Name="IDEvent" Type="int" />
+        </EntityType>
         <EntityType Name="Location">
           <Key>
             <PropertyRef Name="LocationID" />
@@ -39,16 +47,6 @@
           <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="City" Type="nvarchar" MaxLength="40" />
           <Property Name="Adresse" Type="nvarchar" MaxLength="40" />
-        </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -120,6 +118,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Going__IDEvent__398D8EEE">
+          <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+          <End Role="Going" Type="Self.Going" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Going">
+              <PropertyRef Name="IDEvent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Going__IDUser__38996AB5">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Going" Type="Self.Going" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Going">
+              <PropertyRef Name="IDUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Transacti__IDTic__2E1BDC42">
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -168,44 +190,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="insert_dummy_data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
-        </Function>
-        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="EventPlannerDBModelStoreContainer">
           <EntitySet Name="AvailableFunds" EntityType="Self.AvailableFunds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Going" EntityType="Self.Going" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -220,6 +211,14 @@
           <AssociationSet Name="FK__Event__IDUser__33D4B598" Association="Self.FK__Event__IDUser__33D4B598">
             <End Role="User" EntitySet="User" />
             <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Going__IDEvent__398D8EEE" Association="Self.FK__Going__IDEvent__398D8EEE">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Going" EntitySet="Going" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Going__IDUser__38996AB5" Association="Self.FK__Going__IDUser__38996AB5">
+            <End Role="User" EntitySet="User" />
+            <End Role="Going" EntitySet="Going" />
           </AssociationSet>
           <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
             <End Role="Ticket" EntitySet="Ticket" />
@@ -274,6 +273,17 @@
           <NavigationProperty Name="Location" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Event" ToRole="Location" />
           <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
           <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
+          <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
+        </EntityType>
+        <EntityType Name="Going">
+          <Key>
+            <PropertyRef Name="GoingID" />
+          </Key>
+          <Property Name="GoingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDUser" Type="Int32" />
+          <Property Name="IDEvent" Type="Int32" />
+          <NavigationProperty Name="Event" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Going" ToRole="Event" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="Going" ToRole="User" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -283,16 +293,6 @@
           <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-        </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -334,6 +334,7 @@
           <NavigationProperty Name="AvailableFunds" Relationship="Self.FK__User__IDAvailabl__2B3F6F97" FromRole="User" ToRole="AvailableFunds" />
           <NavigationProperty Name="CreditCard" Relationship="Self.FK__User__IDCreditCa__2A4B4B5E" FromRole="User" ToRole="CreditCard" />
           <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="User" ToRole="Event" />
+          <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="User" ToRole="Going" />
           <NavigationProperty Name="Transaction" Relationship="Self.FK__Transacti__IDUse__2F10007B" FromRole="User" ToRole="Transaction" />
         </EntityType>
         <Association Name="FK__User__IDAvailabl__2B3F6F97">
@@ -396,6 +397,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Going__IDEvent__398D8EEE">
+          <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+          <End Role="Going" Type="Self.Going" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventID" />
+            </Principal>
+            <Dependent Role="Going">
+              <PropertyRef Name="IDEvent" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Going__IDUser__38996AB5">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Going" Type="Self.Going" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Going">
+              <PropertyRef Name="IDUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Transacti__IDTic__2E1BDC42">
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -420,12 +445,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="EventPlannerDBEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="EventPlannerDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AvailableFunds" EntityType="Self.AvailableFunds" />
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" />
           <EntitySet Name="Event" EntityType="Self.Event" />
+          <EntitySet Name="Going" EntityType="Self.Going" />
           <EntitySet Name="Location" EntityType="Self.Location" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" />
           <EntitySet Name="User" EntityType="Self.User" />
@@ -449,6 +474,14 @@
             <End Role="User" EntitySet="User" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
+          <AssociationSet Name="FK__Going__IDEvent__398D8EEE" Association="Self.FK__Going__IDEvent__398D8EEE">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Going" EntitySet="Going" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Going__IDUser__38996AB5" Association="Self.FK__Going__IDUser__38996AB5">
+            <End Role="User" EntitySet="User" />
+            <End Role="Going" EntitySet="Going" />
+          </AssociationSet>
           <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="Transaction" EntitySet="Transaction" />
@@ -458,54 +491,13 @@
             <End Role="Transaction" EntitySet="Transaction" />
           </AssociationSet>
           <FunctionImport Name="insert_dummy_data" />
-          <FunctionImport Name="sp_alterdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_creatediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="version" Mode="In" Type="Int32" />
-            <Parameter Name="definition" Mode="In" Type="Binary" />
-          </FunctionImport>
-          <FunctionImport Name="sp_dropdiagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(EventPlannerDBModel.sp_helpdiagramdefinition_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(EventPlannerDBModel.sp_helpdiagrams_Result)">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="sp_renamediagram">
-            <Parameter Name="diagramname" Mode="In" Type="String" />
-            <Parameter Name="owner_id" Mode="In" Type="Int32" />
-            <Parameter Name="new_diagramname" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
-        <ComplexType Name="sp_helpdiagramdefinition_Result">
-          <Property Type="Int32" Name="version" Nullable="true" />
-          <Property Type="Binary" Name="definition" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="sp_helpdiagrams_Result">
-          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
-          <Property Type="Int32" Name="OwnerID" Nullable="false" />
-        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="EventPlannerDBModelStoreContainer" CdmEntityContainer="EventPlannerDBEntities1">
+        <EntityContainerMapping StorageEntityContainer="EventPlannerDBModelStoreContainer" CdmEntityContainer="EventPlannerDBEntities">
           <EntitySetMapping Name="AvailableFunds">
             <EntityTypeMapping TypeName="EventPlannerDBModel.AvailableFunds">
               <MappingFragment StoreEntitySet="AvailableFunds">
@@ -536,23 +528,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Going">
+            <EntityTypeMapping TypeName="EventPlannerDBModel.Going">
+              <MappingFragment StoreEntitySet="Going">
+                <ScalarProperty Name="GoingID" ColumnName="GoingID" />
+                <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+                <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Location">
             <EntityTypeMapping TypeName="EventPlannerDBModel.Location">
               <MappingFragment StoreEntitySet="Location">
                 <ScalarProperty Name="LocationID" ColumnName="LocationID" />
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.sysdiagrams">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -594,30 +584,6 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="insert_dummy_data" FunctionName="EventPlannerDBModel.Store.insert_dummy_data" />
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="EventPlannerDBModel.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="EventPlannerDBModel.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="EventPlannerDBModel.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="EventPlannerDBModel.Store.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="EventPlannerDBModel.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="EventPlannerDBModel.Store.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="EventPlannerDBModel.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="EventPlannerDBModel.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="EventPlannerDBModel.Store.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

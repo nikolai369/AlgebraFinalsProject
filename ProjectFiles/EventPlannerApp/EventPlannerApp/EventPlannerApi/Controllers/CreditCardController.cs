@@ -14,7 +14,7 @@ namespace EventPlannerApi.Controllers
 {
     public class CreditCardController : ApiController
     {
-        private EventPlannerDBEntities1 db = new EventPlannerDBEntities1();
+        private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/CreditCard
         public IQueryable<CreditCard> GetCreditCard()
