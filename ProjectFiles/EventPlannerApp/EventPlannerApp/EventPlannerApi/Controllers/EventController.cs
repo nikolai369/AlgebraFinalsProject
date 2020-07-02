@@ -17,9 +17,9 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Event
-        public IQueryable<Event> GetEvent()
+        public IEnumerable<Event> GetEvent()
         {
-            return db.Event;
+            return db.Event.Include(l=>l.Location).Include(u=>u.User).ToList();
         }
 
         // GET: api/Event/5

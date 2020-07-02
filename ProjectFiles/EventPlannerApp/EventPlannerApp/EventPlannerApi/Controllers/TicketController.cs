@@ -19,7 +19,7 @@ namespace EventPlannerApi.Controllers
         // GET: api/Ticket
         public IQueryable<Ticket> GetTicket()
         {
-            return db.Ticket;
+            return db.Ticket.Include(e=>e.Event);
         }
 
         // GET: api/Ticket/5

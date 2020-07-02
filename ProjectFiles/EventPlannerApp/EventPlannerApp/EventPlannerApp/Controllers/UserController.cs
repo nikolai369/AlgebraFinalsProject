@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using EventPlannerApp.GlobalVariables;
+using Newtonsoft;
 
 namespace EventPlannerApp.Controllers
 {
@@ -17,6 +18,10 @@ namespace EventPlannerApp.Controllers
             IEnumerable<User> users;
             HttpResponseMessage respone = GlobalVariables.GlobalVariables.WebApiClient.GetAsync("User").Result;
             users = respone.Content.ReadAsAsync<IEnumerable<User>>().Result;
+
+    
+            
+            
             return View(users);
         }
 

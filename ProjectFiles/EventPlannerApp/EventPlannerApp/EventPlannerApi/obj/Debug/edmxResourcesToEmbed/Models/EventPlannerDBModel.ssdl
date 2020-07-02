@@ -25,7 +25,6 @@
     <Property Name="Info" Type="nvarchar" MaxLength="1000" />
     <Property Name="IDUser" Type="int" />
     <Property Name="IDLocation" Type="int" />
-    <Property Name="IDTicket" Type="int" />
   </EntityType>
   <EntityType Name="Going">
     <Key>
@@ -50,6 +49,7 @@
     <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="PriceInKunas" Type="int" />
     <Property Name="Info" Type="nvarchar" MaxLength="1000" />
+    <Property Name="IDEvent" Type="int" />
   </EntityType>
   <EntityType Name="Transaction">
     <Key>
@@ -77,7 +77,7 @@
     <Property Name="IDCreditCard" Type="int" />
     <Property Name="IDAvailableFunds" Type="int" />
   </EntityType>
-  <Association Name="FK__Event__IDLocatio__34C8D9D1">
+  <Association Name="FK__Event__IDLocatio__2F10007B">
     <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
     <End Role="Event" Type="Self.Event" Multiplicity="*" />
     <ReferentialConstraint>
@@ -89,19 +89,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Event__IDTicket__35BCFE0A">
-    <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
-    <End Role="Event" Type="Self.Event" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Ticket">
-        <PropertyRef Name="TicketID" />
-      </Principal>
-      <Dependent Role="Event">
-        <PropertyRef Name="IDTicket" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Event__IDUser__33D4B598">
+  <Association Name="FK__Event__IDUser__2E1BDC42">
     <End Role="User" Type="Self.User" Multiplicity="0..1" />
     <End Role="Event" Type="Self.Event" Multiplicity="*" />
     <ReferentialConstraint>
@@ -137,7 +125,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Transacti__IDTic__2E1BDC42">
+  <Association Name="FK__Ticket__IDEvent__31EC6D26">
+    <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+    <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="EventID" />
+      </Principal>
+      <Dependent Role="Ticket">
+        <PropertyRef Name="IDEvent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Transacti__IDTic__34C8D9D1">
     <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
     <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
     <ReferentialConstraint>
@@ -149,7 +149,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Transacti__IDUse__2F10007B">
+  <Association Name="FK__Transacti__IDUse__35BCFE0A">
     <End Role="User" Type="Self.User" Multiplicity="0..1" />
     <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
     <ReferentialConstraint>
@@ -161,7 +161,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__User__IDAvailabl__2B3F6F97">
+  <Association Name="FK__User__IDAvailabl__29572725">
     <End Role="AvailableFunds" Type="Self.AvailableFunds" Multiplicity="0..1" />
     <End Role="User" Type="Self.User" Multiplicity="*" />
     <ReferentialConstraint>
@@ -173,7 +173,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__User__IDCreditCa__2A4B4B5E">
+  <Association Name="FK__User__IDCreditCa__286302EC">
     <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="0..1" />
     <End Role="User" Type="Self.User" Multiplicity="*" />
     <ReferentialConstraint>
@@ -195,15 +195,11 @@
     <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__Event__IDLocatio__34C8D9D1" Association="Self.FK__Event__IDLocatio__34C8D9D1">
+    <AssociationSet Name="FK__Event__IDLocatio__2F10007B" Association="Self.FK__Event__IDLocatio__2F10007B">
       <End Role="Location" EntitySet="Location" />
       <End Role="Event" EntitySet="Event" />
     </AssociationSet>
-    <AssociationSet Name="FK__Event__IDTicket__35BCFE0A" Association="Self.FK__Event__IDTicket__35BCFE0A">
-      <End Role="Ticket" EntitySet="Ticket" />
-      <End Role="Event" EntitySet="Event" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Event__IDUser__33D4B598" Association="Self.FK__Event__IDUser__33D4B598">
+    <AssociationSet Name="FK__Event__IDUser__2E1BDC42" Association="Self.FK__Event__IDUser__2E1BDC42">
       <End Role="User" EntitySet="User" />
       <End Role="Event" EntitySet="Event" />
     </AssociationSet>
@@ -215,19 +211,23 @@
       <End Role="User" EntitySet="User" />
       <End Role="Going" EntitySet="Going" />
     </AssociationSet>
-    <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
+    <AssociationSet Name="FK__Ticket__IDEvent__31EC6D26" Association="Self.FK__Ticket__IDEvent__31EC6D26">
+      <End Role="Event" EntitySet="Event" />
+      <End Role="Ticket" EntitySet="Ticket" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Transacti__IDTic__34C8D9D1" Association="Self.FK__Transacti__IDTic__34C8D9D1">
       <End Role="Ticket" EntitySet="Ticket" />
       <End Role="Transaction" EntitySet="Transaction" />
     </AssociationSet>
-    <AssociationSet Name="FK__Transacti__IDUse__2F10007B" Association="Self.FK__Transacti__IDUse__2F10007B">
+    <AssociationSet Name="FK__Transacti__IDUse__35BCFE0A" Association="Self.FK__Transacti__IDUse__35BCFE0A">
       <End Role="User" EntitySet="User" />
       <End Role="Transaction" EntitySet="Transaction" />
     </AssociationSet>
-    <AssociationSet Name="FK__User__IDAvailabl__2B3F6F97" Association="Self.FK__User__IDAvailabl__2B3F6F97">
+    <AssociationSet Name="FK__User__IDAvailabl__29572725" Association="Self.FK__User__IDAvailabl__29572725">
       <End Role="AvailableFunds" EntitySet="AvailableFunds" />
       <End Role="User" EntitySet="User" />
     </AssociationSet>
-    <AssociationSet Name="FK__User__IDCreditCa__2A4B4B5E" Association="Self.FK__User__IDCreditCa__2A4B4B5E">
+    <AssociationSet Name="FK__User__IDCreditCa__286302EC" Association="Self.FK__User__IDCreditCa__286302EC">
       <End Role="CreditCard" EntitySet="CreditCard" />
       <End Role="User" EntitySet="User" />
     </AssociationSet>

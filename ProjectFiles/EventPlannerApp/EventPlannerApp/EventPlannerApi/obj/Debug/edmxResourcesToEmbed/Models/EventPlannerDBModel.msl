@@ -27,7 +27,6 @@
           <ScalarProperty Name="Info" ColumnName="Info" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
           <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
-          <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -55,6 +54,7 @@
           <ScalarProperty Name="TicketID" ColumnName="TicketID" />
           <ScalarProperty Name="PriceInKunas" ColumnName="PriceInKunas" />
           <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

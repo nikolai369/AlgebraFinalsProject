@@ -13,7 +13,7 @@ namespace EventPlannerApp.Models
         public Nullable<int> IDTicket { get; set; }
         public Nullable<int> IDUser { get; set; }
 
-        public virtual Ticket Ticket { get; set; }
-        public virtual User User { get; set; }
+        public  Ticket Ticket { get; set; }
+        public  User User { get; set; }
     }
 }

@@ -7,6 +7,12 @@ namespace EventPlannerApp.Models
 {
     public class Event
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Event()
+        {
+            this.Going = new HashSet<Going>();
+        }
+
         public int EventID { get; set; }
         public string Title { get; set; }
         public Nullable<System.DateTime> Starting { get; set; }
@@ -16,10 +22,10 @@ namespace EventPlannerApp.Models
         public Nullable<int> IDLocation { get; set; }
         public Nullable<int> IDTicket { get; set; }
 
-        public virtual Location Location { get; set; }
-        public virtual Ticket Ticket { get; set; }
-        public virtual User User { get; set; }
+        public  Location Location { get; set; }
+        public  Ticket Ticket { get; set; }
+        public  User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Going> Going { get; set; }
+        public  ICollection<Going> Going { get; set; }
     }
 }

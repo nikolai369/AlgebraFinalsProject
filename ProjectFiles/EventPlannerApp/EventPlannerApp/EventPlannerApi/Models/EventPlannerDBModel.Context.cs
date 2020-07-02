@@ -20,6 +20,7 @@ namespace EventPlannerApi.Models
         public EventPlannerDBEntities()
             : base("name=EventPlannerDBEntities")
         {
+            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

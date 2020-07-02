@@ -17,9 +17,9 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/User
-        public IQueryable<User> GetUser()
+        public IEnumerable<User> GetUser()
         {
-            return db.User;
+            return db.User.Include(af => af.AvailableFunds).Include(cc => cc.CreditCard).ToList();
         }
 
         // GET: api/User/5
@@ -27,6 +27,7 @@ namespace EventPlannerApi.Controllers
         public IHttpActionResult GetUser(int id)
         {
             User user = db.User.Find(id);
+            
             if (user == null)
             {
                 return NotFound();

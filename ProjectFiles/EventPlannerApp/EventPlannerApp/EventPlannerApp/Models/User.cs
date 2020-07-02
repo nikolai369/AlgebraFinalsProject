@@ -13,6 +13,7 @@ namespace EventPlannerApp.Models
         public User()
         {
             this.Event = new HashSet<Event>();
+            this.Going = new HashSet<Going>();
             this.Transaction = new HashSet<Transaction>();
         }
 
@@ -36,13 +37,14 @@ namespace EventPlannerApp.Models
         public Nullable<int> IDCreditCard { get; set; }
         public Nullable<int> IDAvailableFunds { get; set; }
 
-        public virtual AvailableFunds AvailableFunds { get; set; }
-        public virtual CreditCard CreditCard { get; set; }
+        public  AvailableFunds AvailableFunds { get; set; }
+        public  CreditCard CreditCard { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Event> Event { get; set; }
+        public  ICollection<Event> Event { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Transaction> Transaction { get; set; }
-
+        public  ICollection<Going> Going { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public  ICollection<Transaction> Transaction { get; set; }
 
         public string LoginErrorMessage { get; set; }
     }

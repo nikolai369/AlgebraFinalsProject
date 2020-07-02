@@ -18,6 +18,7 @@ namespace EventPlannerApi.Models
         public Event()
         {
             this.Going = new HashSet<Going>();
+            this.Ticket = new HashSet<Ticket>();
         }
     
         public int EventID { get; set; }
@@ -27,12 +28,12 @@ namespace EventPlannerApi.Models
         public string Info { get; set; }
         public Nullable<int> IDUser { get; set; }
         public Nullable<int> IDLocation { get; set; }
-        public Nullable<int> IDTicket { get; set; }
     
         public virtual Location Location { get; set; }
-        public virtual Ticket Ticket { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Going> Going { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Ticket> Ticket { get; set; }
     }
 }

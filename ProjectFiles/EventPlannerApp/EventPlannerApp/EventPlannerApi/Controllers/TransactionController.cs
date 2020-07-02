@@ -17,9 +17,9 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Transaction
-        public IQueryable<Transaction> GetTransaction()
+        public IEnumerable<Transaction> GetTransaction()
         {
-            return db.Transaction;
+            return db.Transaction.Include(t => t.Ticket).Include(u => u.User).ToList();
         }
 
         // GET: api/Transaction/5
