@@ -17,88 +17,124 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Going
-        public IEnumerable<Going> GetGoing()
+        public IHttpActionResult GetGoings()
         {
-            return db.Going.Include(u => u.User).Include(e => e.Event).ToList();
+            IList<GoingViewModel> goings = null;
+            using (db)
+            {
+                goings = db.Going
+                    .Include("Event")
+                    .Include("User")
+                    .Select(t => new GoingViewModel()
+                    {
+                        IDUser = t.IDUser,
+                        IDEvent = t.IDEvent
+                    }).ToList<GoingViewModel>();
+            }
+            if (goings.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(goings);
         }
 
         // GET: api/Going/5
         [ResponseType(typeof(Going))]
-        public IHttpActionResult GetGoing(int id)
+        public IHttpActionResult GetGoingsByEvent(int id)
         {
-            Going going = db.Going.Find(id);
-            if (going == null)
-            {
-                return NotFound();
-            }
+            IList<GoingViewModel> goings = null;
 
-            return Ok(going);
+            using (db)
+            {
+                goings = db.Going
+                    .Where(t => t.IDEvent == id)
+                    .Include("Event")
+                    .Select(t => new GoingViewModel()
+                    {
+                        IDUser = t.IDUser,
+                        IDEvent = t.IDEvent
+
+                    }).ToList<GoingViewModel>();
+
+                if (goings.Count() == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(goings);
+            }
         }
 
         // PUT: api/Going/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutGoing(int id, Going going)
+        public IHttpActionResult PutGoing(GoingViewModel going)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != going.GoingID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingGoing = db.Going.Where(u => u.GoingID == going.GoingID)
+                                                        .FirstOrDefault<Going>();
 
-            db.Entry(going).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoingExists(id))
+                if (existingGoing != null)
                 {
-                    return NotFound();
+                    existingGoing.IDEvent = going.IDEvent;
+                    existingGoing.IDUser = going.IDUser;
+
+
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/Going
         [ResponseType(typeof(Going))]
-        public IHttpActionResult PostGoing(Going going)
+        public IHttpActionResult PostGoing(GoingViewModel going)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.Going.Add(new Going()
+                {
+                    GoingID = going.GoingID,
+                    IDUser = going.IDUser,
+                    IDEvent = going.IDEvent
+
+                });
+
+                db.SaveChanges();
             }
 
-            db.Going.Add(going);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = going.GoingID }, going);
+            return Ok();
         }
 
         // DELETE: api/Going/5
         [ResponseType(typeof(Going))]
         public IHttpActionResult DeleteGoing(int id)
         {
-            Going going = db.Going.Find(id);
-            if (going == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var going = db.Going
+                    .Where(u => u.GoingID == id)
+                    .FirstOrDefault();
+
+                db.Entry(going).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.Going.Remove(going);
-            db.SaveChanges();
-
-            return Ok(going);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

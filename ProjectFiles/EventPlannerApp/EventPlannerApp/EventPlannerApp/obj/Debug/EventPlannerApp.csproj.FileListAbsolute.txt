@@ -83,3 +83,10 @@ C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPl
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\obj\Debug\EventPlannerApp.pdb
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Net.Http.Formatting.dll
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Net.Http.Formatting.xml
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\EventPlannerApi.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Web.Http.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Web.Http.WebHost.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\EventPlannerApi.pdb
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\EventPlannerApi.dll.config
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Web.Http.xml
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApp\bin\System.Web.Http.WebHost.xml

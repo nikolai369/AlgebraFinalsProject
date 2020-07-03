@@ -177,9 +177,11 @@
     <Compile Include="Models\AvailableFunds.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AvailableFundsViewModel.cs" />
     <Compile Include="Models\CreditCard.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CreditCardViewModel.cs" />
     <Compile Include="Models\Event.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
@@ -198,21 +200,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EventPlannerDBModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\EventViewModel.cs" />
     <Compile Include="Models\Going.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GoingViewModel.cs" />
     <Compile Include="Models\Location.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\LocationViewModel.cs" />
     <Compile Include="Models\Ticket.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TicketViewModel.cs" />
     <Compile Include="Models\Transaction.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TransactionViewModel.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

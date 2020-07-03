@@ -1,0 +1,13 @@
+rest api - crud user, curd event 
+	 - login autorisation
+	- statistika 
+
+
+user - array - event
+
+
+funkcija nakon autentikacije - user + svi eventi prosli + svi koje organizira
+
+broj goinga goinge
+
+

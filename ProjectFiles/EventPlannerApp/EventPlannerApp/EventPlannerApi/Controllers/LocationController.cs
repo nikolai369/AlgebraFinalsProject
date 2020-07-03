@@ -17,88 +17,125 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Location
-        public IQueryable<Location> GetLocation()
+        public IHttpActionResult GetLocations()
         {
-            return db.Location;
+            IList<LocationViewModel> location = null;
+            using (db)
+            {
+                location = db.Location
+                    .Include("Event")
+                    .Select(t => new LocationViewModel()
+                    {
+                        City = t.City,
+                        Adresse = t.Adresse,
+                        Event = t.Event
+                    }).ToList<LocationViewModel>();
+            }
+            if (location.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(location);
         }
 
         // GET: api/Location/5
         [ResponseType(typeof(Location))]
-        public IHttpActionResult GetLocation(int id)
+        public IHttpActionResult GetLocationById(int id)
         {
-            Location location = db.Location.Find(id);
-            if (location == null)
-            {
-                return NotFound();
-            }
+            LocationViewModel location = null;
 
-            return Ok(location);
+            using (db)
+            {
+                location = db.Location
+                    .Where(t => t.LocationID == id)
+                    .Include("Event")
+                    .Select(t => new LocationViewModel()
+                    {
+                        City = t.City,
+                        Adresse = t.Adresse,
+                        Event = t.Event
+
+                    }).FirstOrDefault<LocationViewModel>();
+
+                if (location == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(location);
+            }
         }
 
         // PUT: api/Location/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutLocation(int id, Location location)
+        public IHttpActionResult PutLocation(LocationViewModel location)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != location.LocationID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingLocation = db.Location.Where(u => u.LocationID == location.LocationID)
+                                                        .FirstOrDefault<Location>();
 
-            db.Entry(location).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
+                if (existingLocation != null)
                 {
-                    return NotFound();
+                    existingLocation.City = location.City;
+                    existingLocation.Adresse = location.Adresse;
+
+
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/Location
         [ResponseType(typeof(Location))]
-        public IHttpActionResult PostLocation(Location location)
+        public IHttpActionResult PostTicket(LocationViewModel location)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.Location.Add(new Location()
+                {
+                    LocationID = location.LocationID,
+                    City = location.City,
+                    Adresse = location.Adresse
+
+                });
+
+                db.SaveChanges();
             }
 
-            db.Location.Add(location);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = location.LocationID }, location);
+            return Ok();
         }
 
         // DELETE: api/Location/5
         [ResponseType(typeof(Location))]
         public IHttpActionResult DeleteLocation(int id)
         {
-            Location location = db.Location.Find(id);
-            if (location == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var location = db.Location
+                    .Where(u => u.LocationID == id)
+                    .FirstOrDefault();
+
+                db.Entry(location).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.Location.Remove(location);
-            db.SaveChanges();
-
-            return Ok(location);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

@@ -1,14 +1,12 @@
-﻿using System;
+﻿using EventPlannerApi.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
@@ -17,88 +15,185 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Event
-        public IEnumerable<Event> GetEvent()
+        public IHttpActionResult GetAllEvents()
         {
-            return db.Event.Include(l=>l.Location).Include(u=>u.User).ToList();
+            IList<EventViewModel> events = null;
+            using (db)
+            {
+                events = db.Event
+                    .Include("Location")
+                    .Include("Ticket")
+                    .Select(e => new EventViewModel()
+                    {
+                        EventID = e.EventID,
+                        Title = e.Title,
+                        Starting = e.Starting,
+                        Ending = e.Ending,
+                        Info = e.Info,
+                        Location = e.Location,
+                        Ticket = e.Ticket
+
+                    }).ToList<EventViewModel>();
+            }
+            if (events.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(events);
         }
 
         // GET: api/Event/5
+        //[ResponseType(typeof(Event))]
+        //public IHttpActionResult GetEvent(int id)
+        //{
+        //    EventViewModel eventModel = null;
+
+        //    using (db)
+        //    {
+        //        eventModel = db.Event
+        //            .Include("Location")
+        //            .Include("Ticket")
+        //            .Include("Going")
+        //            .Where(e => e.EventID == id)
+        //            .Select(e => new EventViewModel()
+        //            {
+        //                EventID = e.EventID,
+        //                Title = e.Title,
+        //                Starting = e.Starting,
+        //                Ending = e.Ending,
+        //                Info = e.Info,
+        //                Location = e.Location,
+        //                Ticket = e.Ticket,
+        //                NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
+
+        //            }).FirstOrDefault<EventViewModel>();
+        //    }
+
+        //    //User user = db.User.Find(id);
+
+        //    if (eventModel == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(eventModel);
+        //}
+
+
         [ResponseType(typeof(Event))]
-        public IHttpActionResult GetEvent(int id)
+        public IHttpActionResult GetEventByUserID(int id)
         {
-            Event @event = db.Event.Find(id);
-            if (@event == null)
+            IList<EventViewModel> eventModel = null;
+
+            using (db)
+            {
+                eventModel = db.Event
+                    .Include("Location")
+                    .Include("Ticket")
+                    .Include("Going")
+                    .Where(e => e.IDUser == id)
+                    .Select(e => new EventViewModel()
+                    {
+                        EventID = e.EventID,
+                        Title = e.Title,
+                        Starting = e.Starting,
+                        Ending = e.Ending,
+                        Info = e.Info,
+                        Location = e.Location,
+                        Ticket = e.Ticket,
+                        NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
+
+                    }).ToList<EventViewModel>();
+            }
+
+            //User user = db.User.Find(id);
+
+            if (eventModel == null)
             {
                 return NotFound();
             }
 
-            return Ok(@event);
+            return Ok(eventModel);
         }
+
 
         // PUT: api/Event/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutEvent(int id, Event @event)
+        public IHttpActionResult PutEvent(EventViewModel @event)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != @event.EventID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingEvent = db.Event.Where(e => e.EventID == @event.EventID)
+                                                        .FirstOrDefault<Event>();
 
-            db.Entry(@event).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EventExists(id))
+                if (existingEvent != null)
                 {
-                    return NotFound();
+                    existingEvent.Title = @event.Title;
+                    existingEvent.Starting = @event.Starting;
+                    existingEvent.Ending = @event.Ending;
+                    existingEvent.Info = @event.Info;
+                    existingEvent.Location = @event.Location;
+                    existingEvent.Ticket = @event.Ticket;
+
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/Event
         [ResponseType(typeof(Event))]
-        public IHttpActionResult PostEvent(Event @event)
+        public IHttpActionResult PostNewEvent(EventViewModel eventModel)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.Event.Add(new Event()
+                {
+                    EventID = eventModel.EventID,
+                    Title = eventModel.Title,
+                    Starting = eventModel.Starting,
+                    Ending = eventModel.Ending,
+                    Info = eventModel.Info,
+                    Location = eventModel.Location,
+                    Ticket = eventModel.Ticket
+                    
+                });
+
+                db.SaveChanges();
             }
 
-            db.Event.Add(@event);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = @event.EventID }, @event);
+            return Ok();
         }
 
         // DELETE: api/Event/5
         [ResponseType(typeof(Event))]
         public IHttpActionResult DeleteEvent(int id)
         {
-            Event @event = db.Event.Find(id);
-            if (@event == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var eventModel = db.Event
+                    .Where(e => e.EventID == id)
+                    .FirstOrDefault();
+
+                db.Entry(eventModel).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.Event.Remove(@event);
-            db.SaveChanges();
-
-            return Ok(@event);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

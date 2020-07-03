@@ -17,88 +17,125 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Ticket
-        public IQueryable<Ticket> GetTicket()
+        public IHttpActionResult GetTicket()
         {
-            return db.Ticket.Include(e=>e.Event);
+            IList<TicketViewModel> ticket = null;
+            using (db)
+            {
+                ticket = db.Ticket
+                    .Include("Event")
+                    .Select(t => new TicketViewModel()
+                    {
+                        PriceInKunas = t.PriceInKunas,
+                        Info = t.Info,
+                        Event = t.Event
+                    }).ToList<TicketViewModel>();
+            }
+            if (ticket.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(ticket);
         }
 
         // GET: api/Ticket/5
         [ResponseType(typeof(Ticket))]
-        public IHttpActionResult GetTicket(int id)
+        public IHttpActionResult GetTicketById(int id)
         {
-            Ticket ticket = db.Ticket.Find(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+            TicketViewModel ticket = null;
 
-            return Ok(ticket);
+            using (db)
+            {
+                ticket = db.Ticket
+                    .Where(t => t.TicketID == id)
+                    .Include("Event")
+                    .Select(t => new TicketViewModel()
+                    {
+                        PriceInKunas = t.PriceInKunas,
+                        Info = t.Info,
+                        Event = t.Event
+
+                    }).FirstOrDefault<TicketViewModel>();
+
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(ticket);
+            }
         }
 
         // PUT: api/Ticket/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutTicket(int id, Ticket ticket)
+        public IHttpActionResult PutTicket(TicketViewModel ticket)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != ticket.TicketID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingTicket = db.Ticket.Where(u => u.TicketID == ticket.TicketID)
+                                                        .FirstOrDefault<Ticket>();
 
-            db.Entry(ticket).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TicketExists(id))
+                if (existingTicket != null)
                 {
-                    return NotFound();
+                    existingTicket.PriceInKunas = ticket.PriceInKunas;
+                    existingTicket.Info = ticket.Info;
+
+
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/Ticket
         [ResponseType(typeof(Ticket))]
-        public IHttpActionResult PostTicket(Ticket ticket)
+        public IHttpActionResult PostTicket(TicketViewModel ticket)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.Ticket.Add(new Ticket()
+                {
+                    TicketID = ticket.TicketID,
+                    PriceInKunas = ticket.PriceInKunas,
+                    Info = ticket.Info
+
+                });
+
+                db.SaveChanges();
             }
 
-            db.Ticket.Add(ticket);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = ticket.TicketID }, ticket);
+            return Ok();
         }
 
         // DELETE: api/Ticket/5
         [ResponseType(typeof(Ticket))]
         public IHttpActionResult DeleteTicket(int id)
         {
-            Ticket ticket = db.Ticket.Find(id);
-            if (ticket == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var ticket = db.Ticket
+                    .Where(u => u.TicketID == id)
+                    .FirstOrDefault();
+
+                db.Entry(ticket).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.Ticket.Remove(ticket);
-            db.SaveChanges();
-
-            return Ok(ticket);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

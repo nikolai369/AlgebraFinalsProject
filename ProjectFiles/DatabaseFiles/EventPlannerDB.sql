@@ -42,22 +42,11 @@ create table [Location]
 	Adresse nvarchar(40)
 )
 go
-create table [Event]
-(
-	EventID int primary key identity,
-	Title nvarchar(200),
-	Starting datetime2(2),
-	Ending datetime2(2),
-	Info nvarchar(1000),
-	IDUser int foreign key references [User](UserID),
-	IDLocation int foreign key references Location(LocationID)
-)
 create table Ticket
 (
 	TicketID int primary key identity,
 	PriceInKunas int,
-	Info nvarchar(1000),
-	IDEvent int foreign key references [Event](EventID)
+	Info nvarchar(1000)
 )
 create table [Transaction]
 (
@@ -68,6 +57,17 @@ create table [Transaction]
 	IDUser int foreign key references [User](UserID)
 )
 go
+create table [Event]
+(
+	EventID int primary key identity,
+	Title nvarchar(200),
+	Starting datetime2(2),
+	Ending datetime2(2),
+	Info nvarchar(1000),
+	IDUser int foreign key references [User](UserID),
+	IDLocation int foreign key references Location(LocationID),
+	IDTicket int foreign key references Ticket(TicketID)
+)
 create table Going
 (
 	GoingID int primary key identity,
@@ -84,12 +84,12 @@ as
 	insert into [User] (Email, [Password], FirstName, LastName, Age, IBAN, Info, AdminUser, IDCreditCard, IDAvailableFunds) values 
 		('email@mail.com', 'pass', 'Ana', 'Anic', 22, '', 'Lorem ipsum dolor sit amet', 1, 1, 1), ('email@mail.com', 'pass', 'Matea', 'Mateic', 29, 'HRV12325432445', 'Lorem ipsum dolor sit amet', 0, 2, 2)
 		, ('email@mail.com', 'pass', 'Ivo', 'Ivic', 18, 'HRV999888777666', 'Lorem ipsum dolor sit amet', 0, 3, 2)
-	insert into [Event] (Title, Starting, Ending, Info, IDUser, IDLocation) 
-		values ('Lorem ipsum dolor sit amet', '01-01-2020 16:00:00', '01-01-2020 22:00:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
-		1,1), ('Lorem ipsum dolor sit amet','02-02-2020 21:00:00', '02-03-2020 00:05:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
-		2,2)
-	insert into Ticket (PriceInKunas, Info, IDEvent) values (120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis',1), (60, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis',2)
+	insert into Ticket (PriceInKunas, Info) values (120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis'), (60, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis')
 	insert into [Transaction] (TimeOfPurchase, Info, IDTicket, IDUser) values ('12:00', 'Lorem Ipsum', 1, 1), ('21:36', 'Lorem Ipsum', 2, 2)
+	insert into [Event] (Title, Starting, Ending, Info, IDUser, IDLocation, IDTicket) 
+		values ('Lorem ipsum dolor sit amet', '01-01-2020 16:00:00', '01-01-2020 22:00:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
+		1,1,1), ('Lorem ipsum dolor sit amet','02-02-2020 21:00:00', '02-03-2020 00:05:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis, elit quis feugiat efficitur, dolor eros commodo quam, eget venenatis nisl risus eu diam. Donec suscipit orci a pulvinar lobortis. Sed venenatis dui turpis, placerat vestibulum mi imperdiet eu. Praesent sed posuere tortor. Cras ac quam neque.',
+		2,2,2)
 	insert into Going (IDUser, IDEvent) values (1,1), (2,1), (1,2), (2,2), (3,2)
 go
 
@@ -100,14 +100,14 @@ go
 --drop proc insert_dummy_data
 --go
 
-select * from [User]
-go
 
 select * from Going
 go
+select * from [User]
+go
 
---select * from [Event]
---go
+select * from [Event]
+go
 
 select * from Ticket
 go
@@ -118,3 +118,5 @@ go
 --left join [User] as u on u.UserID = g.IDUser
 --where IDEvent = 1
 
+insert into [Event] values ('test', '2020-01-01 16:00:00.00', '2020-01-01 16:00:00.00', 'test', 1, 2, 1)
+go

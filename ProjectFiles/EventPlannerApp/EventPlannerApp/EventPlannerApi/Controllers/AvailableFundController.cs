@@ -17,88 +17,118 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/AvailableFund
-        public IQueryable<AvailableFunds> GetAvailableFunds()
+        public IHttpActionResult GetAvailableFunds()
         {
-            return db.AvailableFunds;
+            IList<AvailableFundsViewModel> availableFunds = null;
+            using (db)
+            {
+                availableFunds = db.AvailableFunds
+                    .Include("User")
+                    .Select(t => new AvailableFundsViewModel()
+                    {
+                        AvailableMoney = t.AvailableMoney
+                    }).ToList<AvailableFundsViewModel>();
+            }
+            if (availableFunds.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(availableFunds);
         }
 
         // GET: api/AvailableFund/5
         [ResponseType(typeof(AvailableFunds))]
-        public IHttpActionResult GetAvailableFunds(int id)
+        public IHttpActionResult GetAvailableFundsByUserID(int id)
         {
-            AvailableFunds availableFunds = db.AvailableFunds.Find(id);
-            if (availableFunds == null)
-            {
-                return NotFound();
-            }
+            IList<AvailableFundsViewModel> funds = null;
 
-            return Ok(availableFunds);
+            using (db)
+            {
+                funds = db.AvailableFunds
+                    .Where(t => t.AvailableFundsID == id)
+                    .Include("User")
+                    .Select(t => new AvailableFundsViewModel()
+                    {
+                        AvailableMoney = t.AvailableMoney
+
+                    }).ToList<AvailableFundsViewModel>();
+
+                if (funds.Count() == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(funds);
+            }
         }
 
         // PUT: api/AvailableFund/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutAvailableFunds(int id, AvailableFunds availableFunds)
+        public IHttpActionResult PutAvailableFunds(AvailableFundsViewModel funds)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != availableFunds.AvailableFundsID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingFunds = db.AvailableFunds.Where(u => u.AvailableFundsID == funds.AvailableFundsID)
+                                                        .FirstOrDefault<AvailableFunds>();
 
-            db.Entry(availableFunds).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AvailableFundsExists(id))
+                if (existingFunds != null)
                 {
-                    return NotFound();
+                    existingFunds.AvailableMoney = funds.AvailableMoney;
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/AvailableFund
         [ResponseType(typeof(AvailableFunds))]
-        public IHttpActionResult PostAvailableFunds(AvailableFunds availableFunds)
+        public IHttpActionResult PostAvailableFunds(AvailableFundsViewModel funds)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.AvailableFunds.Add(new AvailableFunds()
+                {
+                    AvailableFundsID = funds.AvailableFundsID,
+                    AvailableMoney = funds.AvailableMoney
+                    
+
+                });
+
+                db.SaveChanges();
             }
 
-            db.AvailableFunds.Add(availableFunds);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = availableFunds.AvailableFundsID }, availableFunds);
+            return Ok();
         }
 
         // DELETE: api/AvailableFund/5
         [ResponseType(typeof(AvailableFunds))]
         public IHttpActionResult DeleteAvailableFunds(int id)
         {
-            AvailableFunds availableFunds = db.AvailableFunds.Find(id);
-            if (availableFunds == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var funds = db.AvailableFunds
+                    .Where(u => u.AvailableFundsID == id)
+                    .FirstOrDefault();
+
+                db.Entry(funds).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.AvailableFunds.Remove(availableFunds);
-            db.SaveChanges();
-
-            return Ok(availableFunds);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

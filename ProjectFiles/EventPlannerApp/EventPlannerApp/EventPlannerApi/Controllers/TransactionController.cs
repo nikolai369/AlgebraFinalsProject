@@ -17,88 +17,150 @@ namespace EventPlannerApi.Controllers
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Transaction
-        public IEnumerable<Transaction> GetTransaction()
+        public IHttpActionResult GetTransaction()
         {
-            return db.Transaction.Include(t => t.Ticket).Include(u => u.User).ToList();
+            IList<TransactionViewModel> transactions = null;
+            using (db)
+            {
+                transactions = db.Transaction
+                    .Include("Ticket")
+                    .Include("User")
+                    .Select(u => new TransactionViewModel()
+                    {
+                        TimeOfPurchase = u.TimeOfPurchase,
+                        Info = u.Info,
+                        Ticket = new TicketViewModel()
+                        {
+                            TicketID = u.Ticket.TicketID,
+                            PriceInKunas = u.Ticket.PriceInKunas
+                        },
+                        User = new UserViewModel()
+                        {
+                            UserID = u.User.UserID,
+                            Email = u.User.Email,
+                            FirstName = u.User.FirstName,
+                            LastName = u.User.LastName
+                        }
+
+                    }).ToList<TransactionViewModel>();
+            }
+            if (transactions.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(transactions);
         }
 
         // GET: api/Transaction/5
         [ResponseType(typeof(Transaction))]
-        public IHttpActionResult GetTransaction(int id)
+        public IHttpActionResult GetTransactionById(int id)
         {
-            Transaction transaction = db.Transaction.Find(id);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
+            TransactionViewModel transaction = null;
 
-            return Ok(transaction);
+            using (db)
+            {
+                transaction = db.Transaction
+                    .Where(u => u.TransactionID == id)
+                    .Include("Ticket")
+                    .Include("User")
+                    .Select(u => new TransactionViewModel()
+                    {
+                        TimeOfPurchase = u.TimeOfPurchase,
+                        Info = u.Info,
+                        Ticket = new TicketViewModel()
+                        {
+                            TicketID = u.Ticket.TicketID,
+                            PriceInKunas = u.Ticket.PriceInKunas
+                        },
+                        User = new UserViewModel()
+                        {
+                            UserID = u.User.UserID,
+                            Email = u.User.Email,
+                            FirstName = u.User.FirstName,
+                            LastName = u.User.LastName
+                        }
+
+                    }).FirstOrDefault<TransactionViewModel>();
+
+                if (transaction == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(transaction);
+            }
         }
 
         // PUT: api/Transaction/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutTransaction(int id, Transaction transaction)
+        public IHttpActionResult PutTransaction(TransactionViewModel transaction)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest("Not a valid model");
 
-            if (id != transaction.TransactionID)
+            using (db)
             {
-                return BadRequest();
-            }
+                var existingTransaction = db.Transaction.Where(u => u.TransactionID == transaction.TransactionID)
+                                                        .FirstOrDefault<Transaction>();
 
-            db.Entry(transaction).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionExists(id))
+                if (existingTransaction != null)
                 {
-                    return NotFound();
+                    existingTransaction.TimeOfPurchase = transaction.TimeOfPurchase;
+                    existingTransaction.Info = transaction.Info;
+
+
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw;
+                    return NotFound();
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
 
         // POST: api/Transaction
         [ResponseType(typeof(Transaction))]
-        public IHttpActionResult PostTransaction(Transaction transaction)
+        public IHttpActionResult PostTransaction(TransactionViewModel transaction)
         {
             if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (db)
             {
-                return BadRequest(ModelState);
+                db.Transaction.Add(new Transaction()
+                {
+                    TransactionID = transaction.TransactionID,
+                    TimeOfPurchase = transaction.TimeOfPurchase,
+                    Info = transaction.Info
+
+                });
+
+                db.SaveChanges();
             }
 
-            db.Transaction.Add(transaction);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = transaction.TransactionID }, transaction);
+            return Ok();
         }
 
         // DELETE: api/Transaction/5
         [ResponseType(typeof(Transaction))]
         public IHttpActionResult DeleteTransaction(int id)
         {
-            Transaction transaction = db.Transaction.Find(id);
-            if (transaction == null)
+            if (id <= 0)
+                return BadRequest("Not a valid student id");
+
+            using (db)
             {
-                return NotFound();
+                var transaction = db.Transaction
+                    .Where(u => u.TransactionID == id)
+                    .FirstOrDefault();
+
+                db.Entry(transaction).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
             }
 
-            db.Transaction.Remove(transaction);
-            db.SaveChanges();
-
-            return Ok(transaction);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

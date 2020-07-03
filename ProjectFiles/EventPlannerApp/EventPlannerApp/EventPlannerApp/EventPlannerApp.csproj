@@ -135,7 +135,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="GlobalVariables\GlobalVariables.cs" />
     <Compile Include="Models\AvailableFunds.cs" />
     <Compile Include="Models\CreditCard.cs" />
     <Compile Include="Models\Event.cs" />
@@ -306,6 +305,8 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\LoginLayout.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\UserIndexPage.cshtml" />
+    <Content Include="Views\User\UserLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -325,6 +326,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EventPlannerApi\EventPlannerApi.csproj">
+      <Project>{26BE03A0-420A-42CD-BD5B-363EA408F378}</Project>
+      <Name>EventPlannerApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

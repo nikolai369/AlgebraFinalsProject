@@ -5,52 +5,82 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
-using EventPlannerApp.GlobalVariables;
 using Newtonsoft;
+using EventPlannerApi.Models;
 
 namespace EventPlannerApp.Controllers
 {
     public class UserController : Controller
     {
+
+        private HttpClient client = new HttpClient();
         // GET: User
         public ActionResult Index()
         {
-            IEnumerable<User> users;
-            HttpResponseMessage respone = GlobalVariables.GlobalVariables.WebApiClient.GetAsync("User").Result;
-            users = respone.Content.ReadAsAsync<IEnumerable<User>>().Result;
+            IEnumerable<UserViewModel> users = null;
 
-    
-            
-            
+            using (client)
+            {
+                client.BaseAddress = new Uri("http://localhost:57871/api/");
+
+                var response = client.GetAsync("User");
+                response.Wait();
+
+                var result = response.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<UserViewModel>>();
+                    readTask.Wait();
+
+                    users = readTask.Result;
+                }
+                else
+                {
+                    users = Enumerable.Empty<UserViewModel>();
+                    ModelState.AddModelError(string.Empty, "Server error");
+                }
+            }
             return View(users);
         }
 
-        //public ActionResult Login()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult LoginAutorization(User user)
-        //{
-        //    HttpResponseMessage respone = GlobalVariables.GlobalVariables.WebApiClient.GetAsync("User").Result;
-        //    user = respone.Content.ReadAsAsync<User>().Result;
+        public ActionResult UserLogin()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult LoginAutorization(UserViewModel user)
+        {
+            UserViewModel user_get;
+            using (client)
+            {
+                client.BaseAddress = new Uri("http://localhost:57871/api/");
 
-        //    var userDetails = user.Where(x => x.Email == user.Email && x.Password == user.Password).FirstOrDefault();
-        //    if (userDetails == null)
-        //    {
-        //        user.LoginErrorMassage = "Wrong Email or Password";
-        //        return View("UserLogin", user);
-        //    }
-        //    else
-        //    {
-        //        Session["UserID"] = userDetails.UserID;
+                var response = client.GetAsync("User/" + user.Email);
+                response.Wait();
 
-        //        //Dodati redirect na stranicu koja je ista kao i pocetna defaultna stranica (za koju se ne treba loginati)
-        //        // i ima dodatne funkcionalnosti za ulogiranog/registriranog usera
-        //        return RedirectToAction("UserIndexPage", "UserHomePage");
-        //    }
-            
-        //}
+                var result = response.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<UserViewModel>();
+                    readTask.Wait();
+
+                    user_get = readTask.Result;
+                    if (user_get.Password == user.Password)
+                    {
+                        Session["UserID"] = user_get.UserID;
+                        return View("UserIndexPage", user_get);//redirect to login
+                    }
+                    
+                }
+                else
+                {
+                    return View("UserLogin", user);
+                }
+            }
+            return View();
+        }
 
         //[HttpGet]
         //public ActionResult Register(int id = 0)

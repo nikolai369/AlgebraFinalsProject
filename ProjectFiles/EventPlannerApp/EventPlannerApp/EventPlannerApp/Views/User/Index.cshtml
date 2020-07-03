@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EventPlannerApp.Models.User>
+﻿@model IEnumerable<EventPlannerApi.Models.UserViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -12,13 +12,13 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Email)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Password)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ConfirmPassword)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstName)
@@ -38,28 +38,19 @@
         <th>
             @Html.DisplayNameFor(model => model.AdminUser)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IDCreditCard)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IDAvailableFunds)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LoginErrorMessage)
-        </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
+            @Html.DisplayFor(modelItem => item.UserID)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ConfirmPassword)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.FirstName)
@@ -80,18 +71,9 @@
             @Html.DisplayFor(modelItem => item.AdminUser)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IDCreditCard)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IDAvailableFunds)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LoginErrorMessage)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.UserID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.UserID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.UserID })
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
         </td>
     </tr>
 }
