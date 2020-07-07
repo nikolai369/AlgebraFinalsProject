@@ -14,7 +14,9 @@ namespace EventPlannerApi.Controllers
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
+
         // GET: api/Event
+        [Route("api/event/all")]
         public IHttpActionResult GetAllEvents()
         {
             IList<EventViewModel> events = null;
@@ -42,46 +44,47 @@ namespace EventPlannerApi.Controllers
             return Ok(events);
         }
 
-        // GET: api/Event/5
-        //[ResponseType(typeof(Event))]
-        //public IHttpActionResult GetEvent(int id)
-        //{
-        //    EventViewModel eventModel = null;
+        //GET: api/Event/5
+        [Route("api/event/id")]
+        public IHttpActionResult GetEvent(int id)
+        {
+            EventViewModel eventModel = null;
 
-        //    using (db)
-        //    {
-        //        eventModel = db.Event
-        //            .Include("Location")
-        //            .Include("Ticket")
-        //            .Include("Going")
-        //            .Where(e => e.EventID == id)
-        //            .Select(e => new EventViewModel()
-        //            {
-        //                EventID = e.EventID,
-        //                Title = e.Title,
-        //                Starting = e.Starting,
-        //                Ending = e.Ending,
-        //                Info = e.Info,
-        //                Location = e.Location,
-        //                Ticket = e.Ticket,
-        //                NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
+            using (db)
+            {
+                eventModel = db.Event
+                    .Include("Location")
+                    .Include("Ticket")
+                    .Include("Going")
+                    .Where(e => e.EventID == id)
+                    .Select(e => new EventViewModel()
+                    {
+                        EventID = e.EventID,
+                        Title = e.Title,
+                        Starting = e.Starting,
+                        Ending = e.Ending,
+                        Info = e.Info,
+                        Location = e.Location,
+                        Ticket = e.Ticket,
+                        NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
 
-        //            }).FirstOrDefault<EventViewModel>();
-        //    }
+                    }).FirstOrDefault<EventViewModel>();
+            }
 
-        //    //User user = db.User.Find(id);
+            //User user = db.User.Find(id);
 
-        //    if (eventModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (eventModel == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(eventModel);
-        //}
+            return Ok(eventModel);
+        }
 
 
         [ResponseType(typeof(Event))]
-        public IHttpActionResult GetEventByUserID(int id)
+        [Route("api/event/userid")]
+        public IHttpActionResult GetEventByUserID(UserViewModel user)
         {
             IList<EventViewModel> eventModel = null;
 
@@ -91,7 +94,7 @@ namespace EventPlannerApi.Controllers
                     .Include("Location")
                     .Include("Ticket")
                     .Include("Going")
-                    .Where(e => e.IDUser == id)
+                    .Where(e => e.IDUser == user.UserID)
                     .Select(e => new EventViewModel()
                     {
                         EventID = e.EventID,
@@ -151,7 +154,7 @@ namespace EventPlannerApi.Controllers
 
         // POST: api/Event
         [ResponseType(typeof(Event))]
-        public IHttpActionResult PostNewEvent(EventViewModel eventModel)
+        public IHttpActionResult PostNewEvent([FromBody]EventViewModel eventModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");

@@ -104,24 +104,44 @@ namespace EventPlannerApi.Controllers
         }
 
 
-        public IHttpActionResult GetUserLoginData(string email)
+        [HttpPost]
+        [Route("api/user/login")]
+        //public IHttpActionResult PostUserLoginData(string email, string password)
+        public IHttpActionResult PostUserLoginData([FromBody]UserViewModel user)
         {
-            UserViewModel user = null;
+            UserViewModel user_r = null;
             using (db)
             {
-                user = db.User
-                    .Where(u => u.Email == email)
+                user_r = db.User
+                    .Where(u => u.Email == user.Email && u.Password == user.Password)
                     .Select(u => new UserViewModel()
                     {
+                        UserID = u.UserID,
+                        Email = u.Email,
                         Password = u.Password,
-                        AdminUser = u.AdminUser
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        Age = u.Age,
+                        IBAN = u.IBAN,
+                        Info = u.Info,
+                        AdminUser = u.AdminUser,
+                        AvailableFunds = u.AvailableFunds == null ? null : new AvailableFundsViewModel() //if it has none it joins nothing, if it has it joins available emoney
+                        {
+                            AvailableFundsID = u.AvailableFunds.AvailableFundsID,
+                            AvailableMoney = u.AvailableFunds.AvailableMoney
+                        },
+                        CreditCard = u.CreditCard == null ? null : new CreditCardViewModel()
+                        {
+                            CreditCardID = u.CreditCard.CreditCardID,
+                            CardName = u.CreditCard.CardName
+                        }
                     }).FirstOrDefault<UserViewModel>();
             }
-            if (user == null)
+            if (user_r == null)
             {
                 return NotFound();
             }
-            return Ok(user);
+            return Ok(user_r);
         }
 
 
@@ -163,6 +183,7 @@ namespace EventPlannerApi.Controllers
 
         // POST: api/User
         [ResponseType(typeof(User))]
+        [Route("api/user/register")]
         public IHttpActionResult PostUser(UserViewModel user)
         {
             if (!ModelState.IsValid)
@@ -172,7 +193,6 @@ namespace EventPlannerApi.Controllers
             {
                 db.User.Add(new User()
                 {
-                    UserID = user.UserID,
                     Email = user.Email,
                     Password = user.Password,
                     FirstName = user.FirstName,
