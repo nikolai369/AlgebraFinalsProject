@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 
 namespace EventPlannerApi
@@ -12,6 +14,9 @@ namespace EventPlannerApi
             // Web API configuration and services
 
             // Web API routes
+            config.EnableCors();
+            config.Formatters.Clear();
+            config.Formatters.Add(new JsonMediaTypeFormatter());
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
@@ -19,6 +24,7 @@ namespace EventPlannerApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            
         }
     }
 }

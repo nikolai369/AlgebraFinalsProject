@@ -121,3 +121,8 @@ go
 insert into [Event] values ('test', '2020-01-01 16:00:00.00', '2020-01-01 16:00:00.00', 'test', 1, 2, 1)
 go
 
+update [User] set Email = 'test@mail.com' where UserID = 1
+update [User] set Email = 'test' where UserID = 2
+update [User] set Email = 'test2@mail.com' where UserID = 3
+
+go

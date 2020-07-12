@@ -8,16 +8,19 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
+    [EnableCors(origins: "http://localhost:19007", headers: "*", methods: "*")]
     public class UserController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/User
+        [Route("api/user/all")]
         public IHttpActionResult GetAllUsers()
         {
             IList<UserViewModel> users = null;
@@ -59,6 +62,7 @@ namespace EventPlannerApi.Controllers
 
         // GET: api/User/5
         [ResponseType(typeof(User))]
+        [Route("api/user/{id}")]
         public IHttpActionResult GetUserById(int id)
         {
             UserViewModel user = null;
@@ -107,7 +111,7 @@ namespace EventPlannerApi.Controllers
         [HttpPost]
         [Route("api/user/login")]
         //public IHttpActionResult PostUserLoginData(string email, string password)
-        public IHttpActionResult PostUserLoginData([FromBody]UserViewModel user)
+        public IHttpActionResult PostUserLoginData(UserViewModel user)
         {
             UserViewModel user_r = null;
             using (db)

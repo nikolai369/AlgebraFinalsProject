@@ -163,7 +163,6 @@ namespace EventPlannerApi.Controllers
             {
                 db.Event.Add(new Event()
                 {
-                    EventID = eventModel.EventID,
                     Title = eventModel.Title,
                     Starting = eventModel.Starting,
                     Ending = eventModel.Ending,

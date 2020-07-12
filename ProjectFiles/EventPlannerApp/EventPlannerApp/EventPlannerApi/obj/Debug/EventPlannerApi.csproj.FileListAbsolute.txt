@@ -87,3 +87,6 @@ C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPl
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\obj\Debug\EventPlannerApi.dll
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\obj\Debug\EventPlannerApi.pdb
 C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\obj\Debug\EventPlannerApi.csprojAssemblyReference.cache
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\bin\System.Web.Cors.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\bin\System.Web.Http.Cors.dll
+C:\Users\rokgr\Desktop\AlgebraFinalsProject\ProjectFiles\EventPlannerApp\EventPlannerApp\EventPlannerApi\bin\System.Web.Http.Cors.xml
