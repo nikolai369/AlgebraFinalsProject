@@ -3,20 +3,30 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "GET,POST")]
     public class TicketController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
         // GET: api/Ticket
+
+        [HttpGet]
+        [Route("api/ticket/all")]
         public IHttpActionResult GetTicket()
         {
             IList<TicketViewModel> ticket = null;
@@ -26,6 +36,7 @@ namespace EventPlannerApi.Controllers
                     .Include("Event")
                     .Select(t => new TicketViewModel()
                     {
+                        TicketID = t.TicketID,
                         PriceInKunas = t.PriceInKunas,
                         Info = t.Info,
                         Event = t.Event
@@ -39,7 +50,9 @@ namespace EventPlannerApi.Controllers
         }
 
         // GET: api/Ticket/5
+        
         [ResponseType(typeof(Ticket))]
+        [Route("api/ticket/{id}")]
         public IHttpActionResult GetTicketById(int id)
         {
             TicketViewModel ticket = null;

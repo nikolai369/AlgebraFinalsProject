@@ -101,16 +101,16 @@ go
 --go
 
 
-select * from Going
-go
-select * from [User]
-go
+--select * from Going
+--go
+--select * from [User]
+--go
 
-select * from [Event]
-go
+--select * from [Event]
+--go
 
-select * from Ticket
-go
+--select * from Ticket
+--go
 
 
 --select u.Firstname from Going as g
@@ -118,11 +118,57 @@ go
 --left join [User] as u on u.UserID = g.IDUser
 --where IDEvent = 1
 
-insert into [Event] values ('test', '2020-01-01 16:00:00.00', '2020-01-01 16:00:00.00', 'test', 1, 2, 1)
+--insert into [Event] values ('test', '2020-01-01 16:00:00.00', '2020-01-01 16:00:00.00', 'test', 1, 2, 1)
+--go
+
+--update [User] set Email = 'test@mail.com' where UserID = 1
+--update [User] set Email = 'test2@mail.com' where UserID = 3
+
+--insert into [Event] values ('Event 4', '2020-11-11 16:00:00.00', '2020-11-12 16:00:00.00', 'This is event info', 1, 2, 1)
+--insert into [Event] values ('Event 5', '2020-10-11 16:00:00.00', '2020-11-12 16:00:00.00', 'Event info', 1, 2, 1)
+--insert into [Event] values ('Event 6', '2020-11-09 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 3', 1, 2, 1)
+
+--delete from [Event] where EventID = 5
+
 go
 
-update [User] set Email = 'test@mail.com' where UserID = 1
-update [User] set Email = 'test' where UserID = 2
-update [User] set Email = 'test2@mail.com' where UserID = 3
-
+create proc delete_user
+	@userid int
+as
+	if exists(select UserID from [User] where UserID = @userid) begin
+		begin try 
+			begin transaction
+				update [Event] set IDUser = null where IDUser = @userid
+				delete from Going where IDUser = @userid
+				delete from [Transaction] where IDUser = @userid
+				delete [User] where UserID = @userid
+			commit tran
+		end try
+		begin catch
+			if @@TRANCOUNT > 0
+                rollback tran
+            select null;
+        end catch
+	end
+	else begin
+		select null
+    end
 go
+
+--select * from [User] where Email = 'test'
+--select * from [Event]
+--select * from [Transaction] where IDUser = 6
+--select * from Going where IDUser = 6
+--go
+
+--insert into [User] (Email, [Password]) values ('test', 'test')
+--insert into [Event] (Title,IDUser) values ('test', 6)
+--insert into Going (IDUser) values (6)
+--insert into [Transaction] (IDUser) values (6)
+
+--drop proc delete_user
+--exec delete_user 6
+
+--delete [Event] where Title = 'test'
+
+--delete [User] where UserID = 5

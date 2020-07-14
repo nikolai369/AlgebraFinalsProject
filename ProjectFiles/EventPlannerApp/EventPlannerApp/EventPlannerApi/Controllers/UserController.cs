@@ -14,7 +14,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "http://localhost:19007", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET,POST")]
     public class UserController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
@@ -195,7 +195,7 @@ namespace EventPlannerApi.Controllers
 
             using (db)
             {
-                db.User.Add(new User()
+                    db.User.Add(new User()
                 {
                     Email = user.Email,
                     Password = user.Password,
@@ -210,7 +210,6 @@ namespace EventPlannerApi.Controllers
 
                 db.SaveChanges();
             }
-
             return Ok();
         }
 
