@@ -155,7 +155,7 @@ as
     end
 go
 
---select * from [User] where Email = 'test'
+--select * from [User]
 --select * from [Event]
 --select * from [Transaction] where IDUser = 6
 --select * from Going where IDUser = 6
@@ -172,3 +172,34 @@ go
 --delete [Event] where Title = 'test'
 
 --delete [User] where UserID = 5
+
+create proc delete_event
+	@eventid int
+as
+	if exists(select EventID from [Event] where EventID = @eventid) begin
+		begin try 
+			begin transaction
+				update Going set IDEvent = null where IDEvent = @eventid
+				delete [Event] where EventID = @eventid
+			commit tran
+		end try
+		begin catch
+			if @@TRANCOUNT > 0
+                rollback tran
+            select null;
+        end catch
+	end
+	else begin
+		select null
+    end
+go
+
+--select * from Going
+--select * from [Event]
+--insert into [Event] (Title) values ('test')
+--insert into Going (IDEvent) values (9)
+
+--drop proc delete_event
+--go
+--exec delete_event 8
+--delete Going where GoingID = 8

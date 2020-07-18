@@ -216,6 +216,9 @@
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LocationViewModel.cs" />
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>EventPlannerDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Test.cs" />
     <Compile Include="Models\Ticket.cs">
       <DependentUpon>EventPlannerDBModel.tt</DependentUpon>

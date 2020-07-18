@@ -52,6 +52,16 @@
     <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
   </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
   <EntityType Name="Ticket">
     <Key>
       <PropertyRef Name="TicketID" />
@@ -209,6 +219,7 @@
     <EntitySet Name="Event" EntityType="Self.Event" />
     <EntitySet Name="Going" EntityType="Self.Going" />
     <EntitySet Name="Location" EntityType="Self.Location" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
     <EntitySet Name="Ticket" EntityType="Self.Ticket" />
     <EntitySet Name="Transaction" EntityType="Self.Transaction" />
     <EntitySet Name="User" EntityType="Self.User" />
@@ -248,6 +259,12 @@
       <End Role="User" EntitySet="User" />
       <End Role="Transaction" EntitySet="Transaction" />
     </AssociationSet>
+    <FunctionImport Name="delete_event" ReturnType="Collection(Int32)">
+      <Parameter Name="eventid" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="delete_user" ReturnType="Collection(Int32)">
+      <Parameter Name="userid" Mode="In" Type="Int32" />
+    </FunctionImport>
     <FunctionImport Name="insert_dummy_data" />
   </EntityContainer>
 </Schema>

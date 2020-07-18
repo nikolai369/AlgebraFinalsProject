@@ -1,8 +1,10 @@
 ﻿using EventPlannerApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
@@ -11,11 +13,10 @@ using System.Web.Http.Description;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET,POST")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class EventController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
-
 
         // GET: api/Event
         [Route("api/event/all")]
@@ -181,20 +182,30 @@ namespace EventPlannerApi.Controllers
         }
 
         // DELETE: api/Event/5
-        [ResponseType(typeof(Event))]
+        //[ResponseType(typeof(Event))]
+        [HttpDelete]
+        [Route("api/event/delete/{id}")]
         public IHttpActionResult DeleteEvent(int id)
         {
-            if (id <= 0)
-                return BadRequest("Not a valid student id");
+            //if (id <= 0)
+            //    return BadRequest("Not a valid student id");
 
+            //using (db)
+            //{
+            //    var eventModel = db.Event
+            //        .Where(e => e.EventID == id)
+            //        .FirstOrDefault();
+
+            //    db.Entry(eventModel).State = System.Data.Entity.EntityState.Deleted;
+            //    db.SaveChanges();
+            //}
+            
             using (db)
             {
-                var eventModel = db.Event
-                    .Where(e => e.EventID == id)
-                    .FirstOrDefault();
-
-                db.Entry(eventModel).State = System.Data.Entity.EntityState.Deleted;
-                db.SaveChanges();
+                db.Database.ExecuteSqlCommand(
+                    "Exec delete_event @eventid",
+                    new SqlParameter("@eventid", id
+                    ));
             }
 
             return Ok();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,7 +15,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET,POST")]
+    [EnableCors(origins: "http://localhost:19006/", headers: "*", methods: "GET,POST")]
     public class UserController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
@@ -214,20 +215,29 @@ namespace EventPlannerApi.Controllers
         }
 
         // DELETE: api/User/5
-        [ResponseType(typeof(User))]
+        //[ResponseType(typeof(User))]
+        [HttpDelete]
+        [Route("api/user/delete/{id}")]
         public IHttpActionResult DeleteUser(int id)
         {
-            if (id <= 0)
-                return BadRequest("Not a valid student id");
+            //if (id <= 0)
+            //    return BadRequest("Not a valid student id");
 
+            //using (db)
+            //{
+            //    var user = db.User
+            //        .Where(u => u.UserID == id)
+            //        .FirstOrDefault();
+
+            //    db.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+            //    db.SaveChanges();
+            //}
             using (db)
             {
-                var user = db.User
-                    .Where(u => u.UserID == id)
-                    .FirstOrDefault();
-
-                db.Entry(user).State = System.Data.Entity.EntityState.Deleted;
-                db.SaveChanges();
+                db.Database.ExecuteSqlCommand(
+                    "Exec delete_user @userid",
+                    new SqlParameter("@userid", id
+                    ));
             }
 
             return Ok();

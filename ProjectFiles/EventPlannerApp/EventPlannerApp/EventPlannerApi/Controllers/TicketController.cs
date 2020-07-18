@@ -18,7 +18,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET,POST")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TicketController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();

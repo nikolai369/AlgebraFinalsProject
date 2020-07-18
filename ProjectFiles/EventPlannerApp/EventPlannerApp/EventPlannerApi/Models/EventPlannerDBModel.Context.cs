@@ -33,9 +33,28 @@ namespace EventPlannerApi.Models
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<Going> Going { get; set; }
         public virtual DbSet<Location> Location { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Ticket> Ticket { get; set; }
         public virtual DbSet<Transaction> Transaction { get; set; }
         public virtual DbSet<User> User { get; set; }
+    
+        public virtual ObjectResult<Nullable<int>> delete_event(Nullable<int> eventid)
+        {
+            var eventidParameter = eventid.HasValue ?
+                new ObjectParameter("eventid", eventid) :
+                new ObjectParameter("eventid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("delete_event", eventidParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> delete_user(Nullable<int> userid)
+        {
+            var useridParameter = userid.HasValue ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("delete_user", useridParameter);
+        }
     
         public virtual int insert_dummy_data()
         {
