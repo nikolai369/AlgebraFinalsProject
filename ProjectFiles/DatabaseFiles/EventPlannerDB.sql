@@ -82,8 +82,8 @@ as
 	insert into CreditCard (CardName) values ('Mastercard '), ('Visa'), ('American Express')
 	insert into [Location] (City, Adresse) values ('Zagreb', 'Ilica 191'), ('Zagreb', 'Ilica 201')
 	insert into [User] (Email, [Password], FirstName, LastName, Age, IBAN, Info, AdminUser, IDCreditCard, IDAvailableFunds) values 
-		('test2', 'pass', 'Ana', 'Anic', 22, '', 'Lorem ipsum dolor sit amet', 1, 1, 1), ('test1', 'pass', 'Matea', 'Mateic', 29, 'HRV12325432445', 'Lorem ipsum dolor sit amet', 0, 2, 2)
-		, ('test3', 'pass', 'Ivo', 'Ivic', 18, 'HRV999888777666', 'Lorem ipsum dolor sit amet', 0, 3, 2)
+		('test@mail.com', 'pass', 'Ana', 'Anic', 22, '', 'Lorem ipsum dolor sit amet', 1, 1, 1), ('test1@mail.com', 'pass', 'Matea', 'Mateic', 29, 'HRV12325432445', 'Lorem ipsum dolor sit amet', 0, 2, 2)
+		, ('test2@mail.com', 'pass', 'Ivo', 'Ivic', 18, 'HRV999888777666', 'Lorem ipsum dolor sit amet', 0, 3, 2)
 	insert into Ticket (PriceInKunas, Info) values (120, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis'), (60, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mollis')
 	insert into [Transaction] (TimeOfPurchase, Info, IDTicket, IDUser) values ('12:00', 'Lorem Ipsum', 1, 1), ('21:36', 'Lorem Ipsum', 2, 2)
 	insert into [Event] (Title, Starting, Ending, Info, IDUser, IDLocation, IDTicket) 

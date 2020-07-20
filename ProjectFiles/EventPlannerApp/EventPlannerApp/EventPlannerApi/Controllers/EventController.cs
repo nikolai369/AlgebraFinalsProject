@@ -13,7 +13,7 @@ using System.Web.Http.Description;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET, POST, DELETE")]
     public class EventController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();

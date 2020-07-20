@@ -15,7 +15,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "http://localhost:19006/", headers: "*", methods: "GET,POST")]
+    [EnableCors(origins: "http://localhost:19006", headers: "*", methods: "GET, POST, DELETE")]
     public class UserController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
