@@ -1,7 +1,7 @@
 ## About Project
 
-Event Planner is application that lets browse, create and explore events near you, or near custom location.
+Event Planner is an application that lets you browse, create and explore events near you, or near custom location.
 
-Application is written using C# and .NET with ASP.NET and MVC frameworks. Microsoft SQL is used as database language, and the front end part of application is written in React Native framework.
+The application is written using C# and .NET with ASP.NET and MVC frameworks. T-SQL is used as the database language, and the front end part of the application is written in the React Native framework.
 
-Application is designed to be accessible either as desktop or mobile web page.
+The application is designed to be accessible either as desktop or mobile web page.
