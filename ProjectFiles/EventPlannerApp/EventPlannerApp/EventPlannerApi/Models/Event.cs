@@ -28,6 +28,8 @@ namespace EventPlannerApi.Models
         public Nullable<int> IDUser { get; set; }
         public Nullable<int> IDLocation { get; set; }
         public Nullable<int> IDTicket { get; set; }
+        public string City { get; set; }
+        public string Adresse { get; set; }
     
         public virtual Location Location { get; set; }
         public virtual Ticket Ticket { get; set; }

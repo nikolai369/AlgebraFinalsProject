@@ -20,7 +20,6 @@ namespace EventPlannerApi.Models
         public EventPlannerDBEntities()
             : base("name=EventPlannerDBEntities")
         {
-            Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -33,7 +32,6 @@ namespace EventPlannerApi.Models
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<Going> Going { get; set; }
         public virtual DbSet<Location> Location { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Ticket> Ticket { get; set; }
         public virtual DbSet<Transaction> Transaction { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -59,6 +57,32 @@ namespace EventPlannerApi.Models
         public virtual int insert_dummy_data()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("insert_dummy_data");
+        }
+    
+        public virtual int insert_dummy_data1()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("insert_dummy_data1");
+        }
+    
+        public virtual ObjectResult<near_me_Result> near_me(Nullable<System.DateTime> datetime, Nullable<double> offset, Nullable<decimal> @long, Nullable<decimal> lat)
+        {
+            var datetimeParameter = datetime.HasValue ?
+                new ObjectParameter("datetime", datetime) :
+                new ObjectParameter("datetime", typeof(System.DateTime));
+    
+            var offsetParameter = offset.HasValue ?
+                new ObjectParameter("offset", offset) :
+                new ObjectParameter("offset", typeof(double));
+    
+            var longParameter = @long.HasValue ?
+                new ObjectParameter("long", @long) :
+                new ObjectParameter("long", typeof(decimal));
+    
+            var latParameter = lat.HasValue ?
+                new ObjectParameter("lat", lat) :
+                new ObjectParameter("lat", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<near_me_Result>("near_me", datetimeParameter, offsetParameter, longParameter, latParameter);
         }
     }
 }

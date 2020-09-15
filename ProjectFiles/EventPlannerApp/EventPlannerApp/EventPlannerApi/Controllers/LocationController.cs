@@ -68,6 +68,9 @@ namespace EventPlannerApi.Controllers
             }
         }
 
+
+
+
         // PUT: api/Location/5
         [ResponseType(typeof(void))]
         public IHttpActionResult PutLocation(LocationViewModel location)

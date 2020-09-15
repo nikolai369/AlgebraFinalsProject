@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EventPlannerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EventPlannerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AvailableFunds">
           <Key>
             <PropertyRef Name="AvailableFundsID" />
@@ -31,6 +31,8 @@
           <Property Name="IDUser" Type="int" />
           <Property Name="IDLocation" Type="int" />
           <Property Name="IDTicket" Type="int" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="Adresse" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Going">
           <Key>
@@ -47,16 +49,8 @@
           <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="City" Type="nvarchar" MaxLength="40" />
           <Property Name="Adresse" Type="nvarchar" MaxLength="40" />
-        </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
+          <Property Name="longitude" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="latitude" Type="decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -200,20 +194,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="delete_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="eventid" Type="int" Mode="In" />
-        </Function>
-        <Function Name="delete_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="userid" Type="int" Mode="In" />
-        </Function>
         <Function Name="insert_dummy_data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="near_me" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="datetime" Type="datetime2" Mode="In" />
+          <Parameter Name="offset" Type="float" Mode="In" />
+          <Parameter Name="long" Type="decimal" Mode="In" />
+          <Parameter Name="lat" Type="decimal" Mode="In" />
+        </Function>
         <EntityContainer Name="EventPlannerDBModelStoreContainer">
           <EntitySet Name="AvailableFunds" EntityType="Self.AvailableFunds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Going" EntityType="Self.Going" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -254,8 +247,7 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EventPlannerDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -291,6 +283,8 @@
           <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
           <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
           <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Adresse" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Going">
           <Key>
@@ -310,16 +304,8 @@
           <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-        </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -478,7 +464,6 @@
           <EntitySet Name="Event" EntityType="Self.Event" />
           <EntitySet Name="Going" EntityType="Self.Going" />
           <EntitySet Name="Location" EntityType="Self.Location" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" />
           <EntitySet Name="User" EntityType="Self.User" />
@@ -525,32 +510,127 @@
             <Parameter Name="userid" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="insert_dummy_data" />
+          <FunctionImport Name="insert_dummy_data1" />
+          <FunctionImport Name="near_me" ReturnType="Collection(EventPlannerDBModel.near_me_Result)">
+            <Parameter Name="datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="offset" Mode="In" Type="Double" />
+            <Parameter Name="long" Mode="In" Type="Decimal" />
+            <Parameter Name="lat" Mode="In" Type="Decimal" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="near_me_Result">
+          <Property Type="Int32" Name="EventID" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="200" />
+          <Property Type="DateTime" Name="Starting" Nullable="true" />
+          <Property Type="DateTime" Name="Ending" Nullable="true" />
+          <Property Type="String" Name="Info" Nullable="true" MaxLength="1000" />
+          <Property Type="Int32" Name="IDUser" Nullable="true" />
+          <Property Type="Int32" Name="IDLocation" Nullable="true" />
+          <Property Type="Int32" Name="IDTicket" Nullable="true" />
+          <Property Type="String" Name="City" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="Adresse" Nullable="true" MaxLength="40" />
+          <Property Type="Decimal" Name="latitude" Nullable="true" Precision="8" Scale="6" />
+          <Property Type="Decimal" Name="longitude" Nullable="true" Precision="9" Scale="6" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="EventPlannerDBModelStoreContainer" CdmEntityContainer="EventPlannerDBEntities">
-          <EntitySetMapping Name="AvailableFunds">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.AvailableFunds">
-              <MappingFragment StoreEntitySet="AvailableFunds">
-                <ScalarProperty Name="AvailableFundsID" ColumnName="AvailableFundsID" />
-                <ScalarProperty Name="AvailableMoney" ColumnName="AvailableMoney" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CreditCard">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.CreditCard">
-              <MappingFragment StoreEntitySet="CreditCard">
-                <ScalarProperty Name="CreditCardID" ColumnName="CreditCardID" />
-                <ScalarProperty Name="CardName" ColumnName="CardName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Event">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.Event">
-              <MappingFragment StoreEntitySet="Event">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EventPlannerDBModelStoreContainer" CdmEntityContainer="EventPlannerDBEntities">
+    <EntitySetMapping Name="AvailableFunds">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.AvailableFunds)">
+        <MappingFragment StoreEntitySet="AvailableFunds">
+          <ScalarProperty Name="AvailableFundsID" ColumnName="AvailableFundsID" />
+          <ScalarProperty Name="AvailableMoney" ColumnName="AvailableMoney" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CreditCard">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.CreditCard)">
+        <MappingFragment StoreEntitySet="CreditCard">
+          <ScalarProperty Name="CreditCardID" ColumnName="CreditCardID" />
+          <ScalarProperty Name="CardName" ColumnName="CardName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Event">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Event)">
+        <MappingFragment StoreEntitySet="Event">
+          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Starting" ColumnName="Starting" />
+          <ScalarProperty Name="Ending" ColumnName="Ending" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+          <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
+          <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Going">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Going)">
+        <MappingFragment StoreEntitySet="Going">
+          <ScalarProperty Name="GoingID" ColumnName="GoingID" />
+          <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+          <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Location">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Location)">
+        <MappingFragment StoreEntitySet="Location">
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Ticket">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Ticket)">
+        <MappingFragment StoreEntitySet="Ticket">
+          <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+          <ScalarProperty Name="PriceInKunas" ColumnName="PriceInKunas" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Transaction">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Transaction)">
+        <MappingFragment StoreEntitySet="Transaction">
+          <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+          <ScalarProperty Name="TimeOfPurchase" ColumnName="TimeOfPurchase" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
+          <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.User)">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="Age" ColumnName="Age" />
+          <ScalarProperty Name="IBAN" ColumnName="IBAN" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="AdminUser" ColumnName="AdminUser" />
+          <ScalarProperty Name="IDCreditCard" ColumnName="IDCreditCard" />
+          <ScalarProperty Name="IDAvailableFunds" ColumnName="IDAvailableFunds" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="insert_dummy_data1" FunctionName="EventPlannerDBModel.Store.insert_dummy_data" />
+          <FunctionImportMapping FunctionImportName="near_me" FunctionName="EventPlannerDBModel.Store.near_me">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="EventPlannerDBModel.near_me_Result">
                 <ScalarProperty Name="EventID" ColumnName="EventID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Starting" ColumnName="Starting" />
@@ -559,81 +639,15 @@
                 <ScalarProperty Name="IDUser" ColumnName="IDUser" />
                 <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
                 <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Going">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.Going">
-              <MappingFragment StoreEntitySet="Going">
-                <ScalarProperty Name="GoingID" ColumnName="GoingID" />
-                <ScalarProperty Name="IDUser" ColumnName="IDUser" />
-                <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Location">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.Location">
-              <MappingFragment StoreEntitySet="Location">
-                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.sysdiagrams">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Ticket">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.Ticket">
-              <MappingFragment StoreEntitySet="Ticket">
-                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
-                <ScalarProperty Name="PriceInKunas" ColumnName="PriceInKunas" />
-                <ScalarProperty Name="Info" ColumnName="Info" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Transaction">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.Transaction">
-              <MappingFragment StoreEntitySet="Transaction">
-                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
-                <ScalarProperty Name="TimeOfPurchase" ColumnName="TimeOfPurchase" />
-                <ScalarProperty Name="Info" ColumnName="Info" />
-                <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
-                <ScalarProperty Name="IDUser" ColumnName="IDUser" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="User">
-            <EntityTypeMapping TypeName="EventPlannerDBModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="IBAN" ColumnName="IBAN" />
-                <ScalarProperty Name="Info" ColumnName="Info" />
-                <ScalarProperty Name="AdminUser" ColumnName="AdminUser" />
-                <ScalarProperty Name="IDCreditCard" ColumnName="IDCreditCard" />
-                <ScalarProperty Name="IDAvailableFunds" ColumnName="IDAvailableFunds" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="delete_event" FunctionName="EventPlannerDBModel.Store.delete_event" />
-          <FunctionImportMapping FunctionImportName="delete_user" FunctionName="EventPlannerDBModel.Store.delete_user" />
-          <FunctionImportMapping FunctionImportName="insert_dummy_data" FunctionName="EventPlannerDBModel.Store.insert_dummy_data" />
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+                <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -647,7 +661,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>

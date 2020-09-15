@@ -32,6 +32,8 @@
     <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
     <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
     <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Adresse" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="Going">
     <Key>
@@ -51,16 +53,8 @@
     <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
     <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-  </EntityType>
-  <EntityType Name="sysdiagrams">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="principal_id" Type="Int32" Nullable="false" />
-    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
+    <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
   </EntityType>
   <EntityType Name="Ticket">
     <Key>
@@ -219,7 +213,6 @@
     <EntitySet Name="Event" EntityType="Self.Event" />
     <EntitySet Name="Going" EntityType="Self.Going" />
     <EntitySet Name="Location" EntityType="Self.Location" />
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
     <EntitySet Name="Ticket" EntityType="Self.Ticket" />
     <EntitySet Name="Transaction" EntityType="Self.Transaction" />
     <EntitySet Name="User" EntityType="Self.User" />
@@ -266,5 +259,26 @@
       <Parameter Name="userid" Mode="In" Type="Int32" />
     </FunctionImport>
     <FunctionImport Name="insert_dummy_data" />
+    <FunctionImport Name="insert_dummy_data1" />
+    <FunctionImport Name="near_me" ReturnType="Collection(EventPlannerDBModel.near_me_Result)">
+      <Parameter Name="datetime" Mode="In" Type="DateTime" />
+      <Parameter Name="offset" Mode="In" Type="Double" />
+      <Parameter Name="long" Mode="In" Type="Decimal" />
+      <Parameter Name="lat" Mode="In" Type="Decimal" />
+    </FunctionImport>
   </EntityContainer>
+  <ComplexType Name="near_me_Result">
+    <Property Type="Int32" Name="EventID" Nullable="false" />
+    <Property Type="String" Name="Title" Nullable="true" MaxLength="200" />
+    <Property Type="DateTime" Name="Starting" Nullable="true" />
+    <Property Type="DateTime" Name="Ending" Nullable="true" />
+    <Property Type="String" Name="Info" Nullable="true" MaxLength="1000" />
+    <Property Type="Int32" Name="IDUser" Nullable="true" />
+    <Property Type="Int32" Name="IDLocation" Nullable="true" />
+    <Property Type="Int32" Name="IDTicket" Nullable="true" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="40" />
+    <Property Type="String" Name="Adresse" Nullable="true" MaxLength="40" />
+    <Property Type="Decimal" Name="latitude" Nullable="true" Precision="8" Scale="6" />
+    <Property Type="Decimal" Name="longitude" Nullable="true" Precision="9" Scale="6" />
+  </ComplexType>
 </Schema>

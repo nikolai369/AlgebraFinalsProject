@@ -39,9 +39,18 @@ create table [Location]
 (
 	LocationID int primary key identity,
 	City nvarchar(40),
-	Adresse nvarchar(40)
+	Adresse nvarchar(40),
+	longitude decimal(9,6),
+	latitude decimal(8,6)
 )
 go
+---update-----
+--alter table [Location] add longitude decimal(9,6), latitude decimal(8,6)
+--go
+--update [Location] set longitude = 53.339688, latitude = -6.236688 where LocationID = 1
+--update [Location] set longitude = 45.815399, latitude = 15.966568 where LocationID = 2
+--go
+----------
 create table Ticket
 (
 	TicketID int primary key identity,
@@ -66,8 +75,25 @@ create table [Event]
 	Info nvarchar(1000),
 	IDUser int foreign key references [User](UserID),
 	IDLocation int foreign key references Location(LocationID),
-	IDTicket int foreign key references Ticket(TicketID)
+	IDTicket int foreign key references Ticket(TicketID),
+	City nvarchar(50),
+	Adresse nvarchar(100)
 )
+---update-----
+--alter table [Event] add City nvarchar(50), Adresse nvarchar(100)
+--go
+--select * from [Event]
+--select * from [Location]
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 191' where EventID = 1
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 201' where EventID = 2
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 203' where EventID = 3
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 210' where EventID = 1002
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 110' where EventID = 1003
+--update [Event] set City = 'Zagreb', Adresse = 'Savska cesta 32' where EventID = 1004
+--update [Event] set City = 'Zagreb', Adresse = 'Svetice 15' where EventID = 1005
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 191' where EventID = 1006
+
+
 create table Going
 (
 	GoingID int primary key identity,
@@ -80,7 +106,7 @@ create proc insert_dummy_data
 as
 	insert into AvailableFunds (AvailableMoney) values (100), (124), (1234), (1999)
 	insert into CreditCard (CardName) values ('Mastercard '), ('Visa'), ('American Express')
-	insert into [Location] (City, Adresse) values ('Zagreb', 'Ilica 191'), ('Zagreb', 'Ilica 201')
+	insert into [Location] (City, Adresse, longitude, latitude) values ('Zagreb', 'Ilica 191', 53.339688, -6.236688), ('Zagreb', 'Ilica 201', 45.815399, 15.966568)
 	insert into [User] (Email, [Password], FirstName, LastName, Age, IBAN, Info, AdminUser, IDCreditCard, IDAvailableFunds) values 
 		('test@mail.com', 'pass', 'Ana', 'Anic', 22, '', 'Lorem ipsum dolor sit amet', 1, 1, 1), ('test1@mail.com', 'pass', 'Matea', 'Mateic', 29, 'HRV12325432445', 'Lorem ipsum dolor sit amet', 0, 2, 2)
 		, ('test2@mail.com', 'pass', 'Ivo', 'Ivic', 18, 'HRV999888777666', 'Lorem ipsum dolor sit amet', 0, 3, 2)
@@ -92,6 +118,9 @@ as
 		2,2,2)
 	insert into Going (IDUser, IDEvent) values (1,1), (2,1), (1,2), (2,2), (3,2)
 go
+
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 191' where EventID = 1
+--update [Event] set City = 'Zagreb', Adresse = 'Ilica 201' where EventID = 2
 
 exec insert_dummy_data
 go
@@ -203,3 +232,60 @@ go
 --go
 --exec delete_event 8
 --delete Going where GoingID = 8
+
+
+select * from [Location] where City = 'Zagreb'
+select * from [Event]
+
+insert into [Location] (City, Adresse, latitude, longitude) values ('Zagreb', 'Ilica 203', 45.8131, 15.94299), ('Zagreb', 'Ilica 210', 45.81258, 15.94968), ('Zagreb', 'Ilica 110', 45.81257, 15.96226),
+																   ('Zagreb', 'Savska cesta 32', 45.80176, 15.96357), ('Zagreb', 'Svetice 15', 45.81304, 16.01369)
+
+insert into [Event] (Title,Starting,Ending,Info, IDUser, IDLocation, IDTicket) values ('Event 7', '2020-11-11 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 7', 1, 1004, 1),
+																					  ('Event 8', '2020-11-11 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 8', 1, 1005, 1),
+																					  ('Event 9', '2020-11-11 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 9', 1, 1006, 1),
+																					  ('Event 10', '2020-11-12 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 10', 1, 1007, 1),
+																					  ('Event 11', '2020-11-12 16:00:00.00', '2020-11-10 16:00:00.00', 'Event info 11', 1, 1008, 1)
+
+
+
+--select e.Title, e.Starting,e.Ending, e.Info, l.City, l.Adresse from [Event] as e
+--left join [Location] as l on l.LocationID = e.IDLocation
+--where l.City = @city, l.Adresse = @adresse
+go
+
+create proc near_events
+	@city nvarchar(40),
+	@adresse nvarchar(100)
+as
+	select e.Title, e.Starting,e.Ending, e.Info, l.City, l.Adresse from [Event] as e
+	left join [Location] as l on l.LocationID = e.IDLocation
+	where l.City = @city and l.Adresse = @adresse
+go
+
+
+create proc near_me
+	@datetime datetime2(2),
+	@offset float,
+	@long decimal(9,6),
+	@lat decimal(8,6)
+as
+	select e.*, l.City, l.Adresse, l.latitude, l.longitude from [Event] as e
+	left join [Location] as l on l.LocationID = e.IDLocation
+	where l.longitude < @long + @offset and l.latitude < @lat + @offset and l.longitude > @long - @offset and l.latitude > @lat - @offset
+	and e.Starting >= @datetime
+	order by e.Starting desc
+go
+	
+
+drop proc near_me
+go
+
+exec near_me '2020-11-11 19:00:00.00', 0.05, 15.95117, 45.81258 
+go
+
+select * from [User]
+go
+
+select e.*, l.City, l.Adresse, l.latitude, l.longitude from Event as e left join Location as l on l.LocationID = e.IDLocation where l.longitude < 15.95117 + 0.05 and l.latitude < 45.81258  + 0.05
+and l.longitude > 15.95117 - 0.05 and l.latitude > 45.81258  - 0.5 and e.Starting >= '2020-11-11 19:00:00.00' order by e.Starting desc
+

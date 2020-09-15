@@ -2,7 +2,7 @@
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="EventPlannerDBModelStoreContainer" CdmEntityContainer="EventPlannerDBEntities">
     <EntitySetMapping Name="AvailableFunds">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.AvailableFunds">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.AvailableFunds)">
         <MappingFragment StoreEntitySet="AvailableFunds">
           <ScalarProperty Name="AvailableFundsID" ColumnName="AvailableFundsID" />
           <ScalarProperty Name="AvailableMoney" ColumnName="AvailableMoney" />
@@ -10,7 +10,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CreditCard">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.CreditCard">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.CreditCard)">
         <MappingFragment StoreEntitySet="CreditCard">
           <ScalarProperty Name="CreditCardID" ColumnName="CreditCardID" />
           <ScalarProperty Name="CardName" ColumnName="CardName" />
@@ -18,8 +18,10 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Event">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.Event">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Event)">
         <MappingFragment StoreEntitySet="Event">
+          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
+          <ScalarProperty Name="City" ColumnName="City" />
           <ScalarProperty Name="EventID" ColumnName="EventID" />
           <ScalarProperty Name="Title" ColumnName="Title" />
           <ScalarProperty Name="Starting" ColumnName="Starting" />
@@ -32,7 +34,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Going">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.Going">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Going)">
         <MappingFragment StoreEntitySet="Going">
           <ScalarProperty Name="GoingID" ColumnName="GoingID" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
@@ -41,27 +43,18 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Location">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.Location">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Location)">
         <MappingFragment StoreEntitySet="Location">
           <ScalarProperty Name="LocationID" ColumnName="LocationID" />
           <ScalarProperty Name="City" ColumnName="City" />
           <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="sysdiagrams">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.sysdiagrams">
-        <MappingFragment StoreEntitySet="sysdiagrams">
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-          <ScalarProperty Name="version" ColumnName="version" />
-          <ScalarProperty Name="definition" ColumnName="definition" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Ticket">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.Ticket">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Ticket)">
         <MappingFragment StoreEntitySet="Ticket">
           <ScalarProperty Name="TicketID" ColumnName="TicketID" />
           <ScalarProperty Name="PriceInKunas" ColumnName="PriceInKunas" />
@@ -70,7 +63,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Transaction">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.Transaction">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Transaction)">
         <MappingFragment StoreEntitySet="Transaction">
           <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
           <ScalarProperty Name="TimeOfPurchase" ColumnName="TimeOfPurchase" />
@@ -81,7 +74,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="User">
-      <EntityTypeMapping TypeName="EventPlannerDBModel.User">
+      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.User)">
         <MappingFragment StoreEntitySet="User">
           <ScalarProperty Name="UserID" ColumnName="UserID" />
           <ScalarProperty Name="Email" ColumnName="Email" />
@@ -97,8 +90,24 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="delete_event" FunctionName="EventPlannerDBModel.Store.delete_event" />
-    <FunctionImportMapping FunctionImportName="delete_user" FunctionName="EventPlannerDBModel.Store.delete_user" />
-    <FunctionImportMapping FunctionImportName="insert_dummy_data" FunctionName="EventPlannerDBModel.Store.insert_dummy_data" />
+    <FunctionImportMapping FunctionImportName="insert_dummy_data1" FunctionName="EventPlannerDBModel.Store.insert_dummy_data" />
+    <FunctionImportMapping FunctionImportName="near_me" FunctionName="EventPlannerDBModel.Store.near_me">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="EventPlannerDBModel.near_me_Result">
+          <ScalarProperty Name="EventID" ColumnName="EventID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Starting" ColumnName="Starting" />
+          <ScalarProperty Name="Ending" ColumnName="Ending" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+          <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
+          <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

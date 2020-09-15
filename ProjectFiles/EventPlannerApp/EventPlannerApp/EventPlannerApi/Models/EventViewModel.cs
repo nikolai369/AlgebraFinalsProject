@@ -11,6 +11,9 @@ namespace EventPlannerApi.Models
         public Nullable<System.DateTime> Ending { get; set; }
         public string Info { get; set; }
 
+        public string City { get; set; }
+        public string Adresse { get; set; }
+
         public int NumberOfGoing { get; set; }
 
         public Location Location { get; set; }

@@ -1,10 +1,14 @@
-﻿using EventPlannerApi.Models;
+﻿using Dapper;
+using EventPlannerApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.Device.Location;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
@@ -13,7 +17,7 @@ using System.Web.Http.Description;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET, POST, DELETE")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET, POST")]
     public class EventController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
@@ -47,19 +51,68 @@ namespace EventPlannerApi.Controllers
             return Ok(events);
         }
 
+        [HttpGet]
+        [Route("api/event/{longitude}/{latitude}")]
+        public IHttpActionResult GetNearEvent(double longitude, double latitude)
+        {
+
+            string longitude2 = longitude.ToString();
+            string latitude2 = latitude.ToString();
+            //string longitude = "15.95117";
+            //string latitude = "45.81258";
+            var cs = ConfigurationManager.ConnectionStrings["EventPlannerDBEntities"].ConnectionString;
+            List<EventViewModel> events = new List<EventViewModel>();
+            List<LocationViewModel> locations = new List<LocationViewModel>();
+            string offset = "0.5";
+            //var datetime = DateTime.Now;
+            String dateStr = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss.ff");
+            var datetime = "2020-11-11 19:00:00.00";
+            string near_me = string.Format("select e.*, l.City, l.Adresse, l.latitude, l.longitude from [Event] as e left join [Location] as l on l.LocationID = e.IDLocation where l.longitude < {0} + {1} and l.latitude < {2} + {3} and l.longitude > {4} - {5} and l.latitude > {6} - {7} and e.Starting >= '{8}' order by e.Starting desc", longitude2, offset, latitude2, offset, longitude2, offset, latitude2, offset, datetime);
+            using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(near_me, conn))
+                {
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            var _event = new EventViewModel();
+                            var location = new LocationViewModel();
+                            _event.EventID = rd.GetInt32(rd.GetOrdinal("EventID"));
+                            _event.Title = rd.GetString(rd.GetOrdinal("Title"));
+                            _event.Starting = rd.GetDateTime(rd.GetOrdinal("Starting"));
+                            _event.Ending = rd.GetDateTime(rd.GetOrdinal("Ending"));
+                            _event.Info = rd.GetString(rd.GetOrdinal("Info"));
+                            _event.City = rd.GetString(rd.GetOrdinal("City"));
+                            _event.Adresse = rd.GetString(rd.GetOrdinal("Adresse"));
+
+                            events.Add(_event);                        }
+                    }
+                }
+                conn.Close();
+
+
+                return Ok(events);
+            }
+        }
+
+
         //GET: api/Event/5
-        [Route("api/event/id")]
-        public IHttpActionResult GetEvent(int id)
+        [Route("api/event/{idevent}")]
+        [HttpGet]
+        public IHttpActionResult GetEvent(int idevent)
         {
             EventViewModel eventModel = null;
 
             using (db)
             {
+
                 eventModel = db.Event
                     .Include("Location")
                     .Include("Ticket")
                     .Include("Going")
-                    .Where(e => e.EventID == id)
+                    .Where(e => e.EventID == idevent)
                     .Select(e => new EventViewModel()
                     {
                         EventID = e.EventID,
@@ -155,8 +208,9 @@ namespace EventPlannerApi.Controllers
             return Ok();
         }
 
-        // POST: api/Event
+        //POST: api/Event
         [ResponseType(typeof(Event))]
+        [Route("api/event/create")]
         public IHttpActionResult PostNewEvent([FromBody]EventViewModel eventModel)
         {
             if (!ModelState.IsValid)
@@ -172,7 +226,7 @@ namespace EventPlannerApi.Controllers
                     Info = eventModel.Info,
                     Location = eventModel.Location,
                     Ticket = eventModel.Ticket
-                    
+
                 });
 
                 db.SaveChanges();
