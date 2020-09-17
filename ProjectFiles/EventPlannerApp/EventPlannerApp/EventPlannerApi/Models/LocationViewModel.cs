@@ -9,9 +9,9 @@ namespace EventPlannerApi.Models
         public string City { get; set; }
         public string Adresse { get; set; }
 
-        public Nullable<decimal> longitude { get; set; }
+        public decimal longitude { get; set; }
 
-        public Nullable<decimal> latitude { get; set; }
+        public decimal latitude { get; set; }
 
         public virtual ICollection<Event> Event { get; set; }
     }

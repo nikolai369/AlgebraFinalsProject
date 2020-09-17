@@ -13,7 +13,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET, POST, DELETE")]
     public class GoingController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
@@ -98,6 +98,7 @@ namespace EventPlannerApi.Controllers
 
         // POST: api/Going
         [ResponseType(typeof(Going))]
+        [Route("api/going/is_going")]
         public IHttpActionResult PostGoing(GoingViewModel going)
         {
             if (!ModelState.IsValid)
@@ -107,10 +108,8 @@ namespace EventPlannerApi.Controllers
             {
                 db.Going.Add(new Going()
                 {
-                    GoingID = going.GoingID,
                     IDUser = going.IDUser,
                     IDEvent = going.IDEvent
-
                 });
 
                 db.SaveChanges();
@@ -121,15 +120,13 @@ namespace EventPlannerApi.Controllers
 
         // DELETE: api/Going/5
         [ResponseType(typeof(Going))]
-        public IHttpActionResult DeleteGoing(int id)
+        [Route("api/going/delete")]
+        public IHttpActionResult DeleteGoing(GoingViewModel deletegoing)
         {
-            if (id <= 0)
-                return BadRequest("Not a valid student id");
-
             using (db)
             {
                 var going = db.Going
-                    .Where(u => u.GoingID == id)
+                    .Where(u => u.IDUser == deletegoing.IDUser && u.IDEvent == deletegoing.IDEvent)
                     .FirstOrDefault();
 
                 db.Entry(going).State = System.Data.Entity.EntityState.Deleted;

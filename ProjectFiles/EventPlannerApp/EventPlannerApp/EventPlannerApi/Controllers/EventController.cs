@@ -17,21 +17,24 @@ using System.Web.Http.Description;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET, POST")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET, POST, DELETE")]
     public class EventController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
 
+        
         // GET: api/Event
         [Route("api/event/all")]
         public IHttpActionResult GetAllEvents()
         {
             IList<EventViewModel> events = null;
+            DateTime dateStr = DateTime.Now;
             using (db)
             {
                 events = db.Event
                     .Include("Location")
                     .Include("Ticket")
+                    //.Where(e => e.Starting >= dateStr)
                     .Select(e => new EventViewModel()
                     {
                         EventID = e.EventID,
@@ -52,12 +55,41 @@ namespace EventPlannerApi.Controllers
         }
 
         [HttpGet]
-        [Route("api/event/{longitude}/{latitude}")]
-        public IHttpActionResult GetNearEvent(double longitude, double latitude)
+        [Route("api/event/going/{id_event}")]
+        public IHttpActionResult GetGoings(int id_event)
+        {
+            string num_of_going = string.Format("select IDUser from Going where IDEvent = {0}", id_event);
+            int count = 0;
+            EventViewModel e = new EventViewModel();
+            using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(num_of_going, conn))
+                {
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            count++;
+                        }
+                    }
+                }
+                e.NumberOfGoing = count;
+                e.EventID = id_event;
+                return Ok(e);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/event/near_me")]
+        public IHttpActionResult GetNearEvent(Test location)
         {
 
-            string longitude2 = longitude.ToString();
-            string latitude2 = latitude.ToString();
+            string latitude2 = location.latitude;
+            string longitude2 = location.longitude;
+            //string longitude2 = longitude.ToString();
+            //string latitude2 = latitude.ToString();
             //string longitude = "15.95117";
             //string latitude = "45.81258";
             var cs = ConfigurationManager.ConnectionStrings["EventPlannerDBEntities"].ConnectionString;
@@ -65,8 +97,8 @@ namespace EventPlannerApi.Controllers
             List<LocationViewModel> locations = new List<LocationViewModel>();
             string offset = "0.5";
             //var datetime = DateTime.Now;
-            String dateStr = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss.ff");
-            var datetime = "2020-11-11 19:00:00.00";
+            string datetime = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss.ff");
+            //var datetime = "2020-11-11 19:00:00.00";
             string near_me = string.Format("select e.*, l.City, l.Adresse, l.latitude, l.longitude from [Event] as e left join [Location] as l on l.LocationID = e.IDLocation where l.longitude < {0} + {1} and l.latitude < {2} + {3} and l.longitude > {4} - {5} and l.latitude > {6} - {7} and e.Starting >= '{8}' order by e.Starting desc", longitude2, offset, latitude2, offset, longitude2, offset, latitude2, offset, datetime);
             using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
             {
@@ -78,7 +110,6 @@ namespace EventPlannerApi.Controllers
                         while (rd.Read())
                         {
                             var _event = new EventViewModel();
-                            var location = new LocationViewModel();
                             _event.EventID = rd.GetInt32(rd.GetOrdinal("EventID"));
                             _event.Title = rd.GetString(rd.GetOrdinal("Title"));
                             _event.Starting = rd.GetDateTime(rd.GetOrdinal("Starting"));
@@ -101,7 +132,7 @@ namespace EventPlannerApi.Controllers
         //GET: api/Event/5
         [Route("api/event/{idevent}")]
         [HttpGet]
-        public IHttpActionResult GetEvent(int idevent)
+        public IHttpActionResult GetEvent(int? idevent)
         {
             EventViewModel eventModel = null;
 
@@ -224,6 +255,8 @@ namespace EventPlannerApi.Controllers
                     Starting = eventModel.Starting,
                     Ending = eventModel.Ending,
                     Info = eventModel.Info,
+                    City = eventModel.City,
+                    Adresse = eventModel.Adresse,
                     Location = eventModel.Location,
                     Ticket = eventModel.Ticket
 

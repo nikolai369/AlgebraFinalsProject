@@ -7,7 +7,7 @@ namespace EventPlannerApi.Models
 {
     public class Test
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string longitude { get; set; }
+        public string latitude { get; set; }
     }
 }

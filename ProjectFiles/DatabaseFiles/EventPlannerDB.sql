@@ -234,8 +234,8 @@ go
 --delete Going where GoingID = 8
 
 
-select * from [Location] where City = 'Zagreb'
-select * from [Event]
+--select * from [Location] where City = 'Zagreb'
+--select * from [Event]
 
 insert into [Location] (City, Adresse, latitude, longitude) values ('Zagreb', 'Ilica 203', 45.8131, 15.94299), ('Zagreb', 'Ilica 210', 45.81258, 15.94968), ('Zagreb', 'Ilica 110', 45.81257, 15.96226),
 																   ('Zagreb', 'Savska cesta 32', 45.80176, 15.96357), ('Zagreb', 'Svetice 15', 45.81304, 16.01369)
@@ -277,15 +277,23 @@ as
 go
 	
 
-drop proc near_me
-go
+--drop proc near_me
+--go
 
-exec near_me '2020-11-11 19:00:00.00', 0.05, 15.95117, 45.81258 
-go
+--exec near_me '2020-11-11 19:00:00.00', 0.05, 15.95117, 45.81258 
+--go
 
-select * from [User]
-go
+--select * from [User]
+--go
 
-select e.*, l.City, l.Adresse, l.latitude, l.longitude from Event as e left join Location as l on l.LocationID = e.IDLocation where l.longitude < 15.95117 + 0.05 and l.latitude < 45.81258  + 0.05
-and l.longitude > 15.95117 - 0.05 and l.latitude > 45.81258  - 0.5 and e.Starting >= '2020-11-11 19:00:00.00' order by e.Starting desc
+--select e.*, l.City, l.Adresse, l.latitude, l.longitude from Event as e left join Location as l on l.LocationID = e.IDLocation where l.longitude < 15.95117 + 0.05 and l.latitude < 45.81258  + 0.05
+--and l.longitude > 15.95117 - 0.05 and l.latitude > 45.81258  - 0.5 and e.Starting >= '2020-11-11 19:00:00.00' order by e.Starting desc
 
+--select IDUser from [Event] where EventID = 1
+
+--select IDUser from Going where IDEvent = 2
+
+
+--select * from Going 
+
+--delete from Going where IDUser = 1 and IDEvent = 1
