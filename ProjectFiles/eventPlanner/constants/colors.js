@@ -1,0 +1,15 @@
+export default {
+  primary: "#ffb997",
+  primaryAccent: "#f67e7d",
+  skin: "#f8bd9e",
+  darkGreen: "#162b29",
+  lightGreen: "#216a61",
+  detail: "#0b032d",
+  lightSkin: "ffe8e2",
+  yellow: "#fbda57",
+  magenta: "rgb(200, 50, 100)",
+  orange: "rgb(200, 66, 33)",
+  black: "#222",
+  blacker: "#111",
+  white: "#fff",
+};

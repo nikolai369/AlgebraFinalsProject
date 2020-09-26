@@ -1,0 +1,15 @@
+ProjectFiles/eventPlanner/node_modules/**/*
+ProjectFiles/eventPlanner/.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+ProjectFiles/eventPlanner/web-build/
+ProjectFiles/eventPlanner/web-report/
+
+# macOS
+ProjectFiles/eventPlanner/.DS_Store
+
