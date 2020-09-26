@@ -19,6 +19,11 @@ namespace EventPlannerApi
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
             routes.MapRoute(
+               name: "test",
+               url: "{controller}/{id}",
+               defaults: new { controller = "Home", id = UrlParameter.Optional }
+           );
+            routes.MapRoute(
                 name: "GetNearEvent",
                 url: "api/{controller}/{longitude}/{latitude}"
             );

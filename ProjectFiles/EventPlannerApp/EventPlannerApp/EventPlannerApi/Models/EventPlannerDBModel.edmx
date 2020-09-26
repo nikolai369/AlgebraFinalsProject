@@ -27,12 +27,11 @@
           <Property Name="Title" Type="nvarchar" MaxLength="200" />
           <Property Name="Starting" Type="datetime2" Precision="2" />
           <Property Name="Ending" Type="datetime2" Precision="2" />
-          <Property Name="Info" Type="nvarchar" MaxLength="1000" />
           <Property Name="IDUser" Type="int" />
-          <Property Name="IDLocation" Type="int" />
           <Property Name="IDTicket" Type="int" />
-          <Property Name="City" Type="nvarchar" MaxLength="50" />
           <Property Name="Adresse" Type="nvarchar" MaxLength="100" />
+          <Property Name="longitude" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="latitude" Type="decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Going">
           <Key>
@@ -41,16 +40,6 @@
           <Property Name="GoingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IDUser" Type="int" />
           <Property Name="IDEvent" Type="int" />
-        </EntityType>
-        <EntityType Name="Location">
-          <Key>
-            <PropertyRef Name="LocationID" />
-          </Key>
-          <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="City" Type="nvarchar" MaxLength="40" />
-          <Property Name="Adresse" Type="nvarchar" MaxLength="40" />
-          <Property Name="longitude" Type="decimal" Precision="9" Scale="6" />
-          <Property Name="latitude" Type="decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -86,19 +75,7 @@
           <Property Name="IDCreditCard" Type="int" />
           <Property Name="IDAvailableFunds" Type="int" />
         </EntityType>
-        <Association Name="FK__Event__IDLocatio__34C8D9D1">
-          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
-          <End Role="Event" Type="Self.Event" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Location">
-              <PropertyRef Name="LocationID" />
-            </Principal>
-            <Dependent Role="Event">
-              <PropertyRef Name="IDLocation" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Event__IDTicket__35BCFE0A">
+        <Association Name="FK__Event__IDTicket__32E0915F">
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -110,7 +87,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Event__IDUser__33D4B598">
+        <Association Name="FK__Event__IDUser__31EC6D26">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -122,7 +99,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Going__IDEvent__398D8EEE">
+        <Association Name="FK__Going__IDEvent__3A81B327">
           <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
           <End Role="Going" Type="Self.Going" Multiplicity="*" />
           <ReferentialConstraint>
@@ -134,7 +111,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Going__IDUser__38996AB5">
+        <Association Name="FK__Going__IDUser__398D8EEE">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Going" Type="Self.Going" Multiplicity="*" />
           <ReferentialConstraint>
@@ -146,7 +123,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Transacti__IDTic__300424B4">
+        <Association Name="FK__Transacti__IDTic__2E1BDC42">
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
@@ -158,7 +135,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Transacti__IDUse__30F848ED">
+        <Association Name="FK__Transacti__IDUse__2F10007B">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
           <ReferentialConstraint>
@@ -194,6 +171,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="delete_event" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="eventid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="delete_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="userid" Type="int" Mode="In" />
+        </Function>
         <Function Name="insert_dummy_data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="near_me" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="datetime" Type="datetime2" Mode="In" />
@@ -206,35 +189,30 @@
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Going" EntityType="Self.Going" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Event__IDLocatio__34C8D9D1" Association="Self.FK__Event__IDLocatio__34C8D9D1">
-            <End Role="Location" EntitySet="Location" />
-            <End Role="Event" EntitySet="Event" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Event__IDTicket__35BCFE0A" Association="Self.FK__Event__IDTicket__35BCFE0A">
+          <AssociationSet Name="FK__Event__IDTicket__32E0915F" Association="Self.FK__Event__IDTicket__32E0915F">
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
-          <AssociationSet Name="FK__Event__IDUser__33D4B598" Association="Self.FK__Event__IDUser__33D4B598">
+          <AssociationSet Name="FK__Event__IDUser__31EC6D26" Association="Self.FK__Event__IDUser__31EC6D26">
             <End Role="User" EntitySet="User" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
-          <AssociationSet Name="FK__Going__IDEvent__398D8EEE" Association="Self.FK__Going__IDEvent__398D8EEE">
+          <AssociationSet Name="FK__Going__IDEvent__3A81B327" Association="Self.FK__Going__IDEvent__3A81B327">
             <End Role="Event" EntitySet="Event" />
             <End Role="Going" EntitySet="Going" />
           </AssociationSet>
-          <AssociationSet Name="FK__Going__IDUser__38996AB5" Association="Self.FK__Going__IDUser__38996AB5">
+          <AssociationSet Name="FK__Going__IDUser__398D8EEE" Association="Self.FK__Going__IDUser__398D8EEE">
             <End Role="User" EntitySet="User" />
             <End Role="Going" EntitySet="Going" />
           </AssociationSet>
-          <AssociationSet Name="FK__Transacti__IDTic__300424B4" Association="Self.FK__Transacti__IDTic__300424B4">
+          <AssociationSet Name="FK__Transacti__IDTic__2E1BDC42" Association="Self.FK__Transacti__IDTic__2E1BDC42">
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="Transaction" EntitySet="Transaction" />
           </AssociationSet>
-          <AssociationSet Name="FK__Transacti__IDUse__30F848ED" Association="Self.FK__Transacti__IDUse__30F848ED">
+          <AssociationSet Name="FK__Transacti__IDUse__2F10007B" Association="Self.FK__Transacti__IDUse__2F10007B">
             <End Role="User" EntitySet="User" />
             <End Role="Transaction" EntitySet="Transaction" />
           </AssociationSet>
@@ -275,16 +253,14 @@
           <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Starting" Type="DateTime" Precision="2" />
           <Property Name="Ending" Type="DateTime" Precision="2" />
-          <Property Name="Info" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="IDUser" Type="Int32" />
-          <Property Name="IDLocation" Type="Int32" />
           <Property Name="IDTicket" Type="Int32" />
-          <NavigationProperty Name="Location" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Event" ToRole="Location" />
           <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
           <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
           <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
-          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Adresse" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Going">
           <Key>
@@ -295,17 +271,6 @@
           <Property Name="IDEvent" Type="Int32" />
           <NavigationProperty Name="Event" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Going" ToRole="Event" />
           <NavigationProperty Name="User" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="Going" ToRole="User" />
-        </EntityType>
-        <EntityType Name="Location">
-          <Key>
-            <PropertyRef Name="LocationID" />
-          </Key>
-          <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-          <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-          <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
-          <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -371,18 +336,6 @@
             </Principal>
             <Dependent Role="User">
               <PropertyRef Name="IDCreditCard" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Event__IDLocatio__34C8D9D1">
-          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
-          <End Role="Event" Type="Self.Event" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Location">
-              <PropertyRef Name="LocationID" />
-            </Principal>
-            <Dependent Role="Event">
-              <PropertyRef Name="IDLocation" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -463,7 +416,6 @@
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" />
           <EntitySet Name="Event" EntityType="Self.Event" />
           <EntitySet Name="Going" EntityType="Self.Going" />
-          <EntitySet Name="Location" EntityType="Self.Location" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" />
           <EntitySet Name="User" EntityType="Self.User" />
@@ -474,10 +426,6 @@
           <AssociationSet Name="FK__User__IDCreditCa__286302EC" Association="Self.FK__User__IDCreditCa__286302EC">
             <End Role="CreditCard" EntitySet="CreditCard" />
             <End Role="User" EntitySet="User" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Event__IDLocatio__34C8D9D1" Association="Self.FK__Event__IDLocatio__34C8D9D1">
-            <End Role="Location" EntitySet="Location" />
-            <End Role="Event" EntitySet="Event" />
           </AssociationSet>
           <AssociationSet Name="FK__Event__IDTicket__35BCFE0A" Association="Self.FK__Event__IDTicket__35BCFE0A">
             <End Role="Ticket" EntitySet="Ticket" />
@@ -516,6 +464,12 @@
             <Parameter Name="offset" Mode="In" Type="Double" />
             <Parameter Name="long" Mode="In" Type="Decimal" />
             <Parameter Name="lat" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="delete_event1" ReturnType="Collection(Int32)">
+          <Parameter Name="eventid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="delete_user1" ReturnType="Collection(Int32)">
+          <Parameter Name="userid" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="near_me_Result">
@@ -557,15 +511,14 @@
     <EntitySetMapping Name="Event">
       <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Event)">
         <MappingFragment StoreEntitySet="Event">
-          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-                <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+                <ScalarProperty Name="longitude" ColumnName="longitude" />
+                <ScalarProperty Name="Adresse" ColumnName="Adresse" />
                 <ScalarProperty Name="EventID" ColumnName="EventID" />
           <ScalarProperty Name="Title" ColumnName="Title" />
           <ScalarProperty Name="Starting" ColumnName="Starting" />
           <ScalarProperty Name="Ending" ColumnName="Ending" />
-          <ScalarProperty Name="Info" ColumnName="Info" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
-          <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
           <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -576,17 +529,6 @@
           <ScalarProperty Name="GoingID" ColumnName="GoingID" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
           <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Location">
-      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Location)">
-        <MappingFragment StoreEntitySet="Location">
-          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-          <ScalarProperty Name="longitude" ColumnName="longitude" />
-          <ScalarProperty Name="latitude" ColumnName="latitude" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -646,6 +588,8 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="delete_event1" FunctionName="EventPlannerDBModel.Store.delete_event" />
+          <FunctionImportMapping FunctionImportName="delete_user1" FunctionName="EventPlannerDBModel.Store.delete_user" />
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

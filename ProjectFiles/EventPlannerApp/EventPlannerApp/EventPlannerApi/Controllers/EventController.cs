@@ -17,11 +17,11 @@ using System.Web.Http.Description;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "GET, POST, DELETE")]
+    [EnableCors(origins: "*", headers: "Content-Type", methods: "GET, POST, PUT, DELETE")]
     public class EventController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
-
+        //Configuration configuration = Configuration.EnableCors();
         
         // GET: api/Event
         [Route("api/event/all")]
@@ -41,8 +41,10 @@ namespace EventPlannerApi.Controllers
                         Title = e.Title,
                         Starting = e.Starting,
                         Ending = e.Ending,
-                        Info = e.Info,
-                        Location = e.Location,
+                        Adresse = e.Adresse,
+                        IDUser = e.IDUser,
+                        longitude = e.longitude,
+                        latitude = e.latitude,
                         Ticket = e.Ticket
 
                     }).ToList<EventViewModel>();
@@ -54,11 +56,64 @@ namespace EventPlannerApi.Controllers
             return Ok(events);
         }
 
-        [HttpGet]
-        [Route("api/event/going/{id_event}")]
-        public IHttpActionResult GetGoings(int id_event)
+
+        
+        [HttpPost]
+        [Route("api/event/near_me")]
+        public IHttpActionResult PostNearEvent(Test location)
         {
-            string num_of_going = string.Format("select IDUser from Going where IDEvent = {0}", id_event);
+
+            string latitude2 = location.latitude;
+            string longitude2 = location.longitude;
+            //string longitude2 = longitude.ToString();
+            //string latitude2 = latitude.ToString();
+            //string longitude = "15.95117";
+            //string latitude = "45.81258";
+            var cs = ConfigurationManager.ConnectionStrings["EventPlannerDBEntities"].ConnectionString;
+            List<EventViewModel> events = new List<EventViewModel>();
+            string offset = "0.5";
+            //var datetime = DateTime.Now;
+            string datetime = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss.ff");
+            //var datetime = "2020-11-11 19:00:00.00";
+            string near_me = string.Format("select e.* from [Event] as e where e.longitude < {0} + {1} and e.latitude < {2} + {3} and e.longitude > {4} - {5} and e.latitude > {6} - {7} and e.Starting >= '{8}' order by e.Starting desc", longitude2, offset, latitude2, offset, longitude2, offset, latitude2, offset, datetime);
+            using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(near_me, conn))
+                {
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            var _event = new EventViewModel();
+                            _event.EventID = rd.GetInt32(rd.GetOrdinal("EventID"));
+                            _event.Title = rd.GetString(rd.GetOrdinal("Title"));
+                            _event.Starting = rd.GetDateTime(rd.GetOrdinal("Starting"));
+                            _event.Ending = rd.GetDateTime(rd.GetOrdinal("Ending"));
+                            _event.Adresse = rd.GetString(rd.GetOrdinal("Adresse"));
+                            _event.IDUser = rd.GetInt32(rd.GetOrdinal("IDUser"));
+
+                            events.Add(_event);                        }
+                    }
+                }
+                conn.Close();
+
+
+                return Ok(events);
+            }
+        }
+
+
+        //GET: api/Event/5
+        [Route("api/event/idevent")]
+        [HttpPost]
+        public IHttpActionResult PostEvent(EventViewModel idevent)
+        {
+            EventViewModel eventModel = null;
+            bool am_going = true;
+            GoingViewModel am_i_going = new GoingViewModel();
+
+            string num_of_going = string.Format("select IDUser from Going where IDEvent = {0}", idevent.EventID);
             int count = 0;
             EventViewModel e = new EventViewModel();
             using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
@@ -74,86 +129,44 @@ namespace EventPlannerApi.Controllers
                         }
                     }
                 }
-                e.NumberOfGoing = count;
-                e.EventID = id_event;
-                return Ok(e);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("api/event/near_me")]
-        public IHttpActionResult GetNearEvent(Test location)
-        {
-
-            string latitude2 = location.latitude;
-            string longitude2 = location.longitude;
-            //string longitude2 = longitude.ToString();
-            //string latitude2 = latitude.ToString();
-            //string longitude = "15.95117";
-            //string latitude = "45.81258";
-            var cs = ConfigurationManager.ConnectionStrings["EventPlannerDBEntities"].ConnectionString;
-            List<EventViewModel> events = new List<EventViewModel>();
-            List<LocationViewModel> locations = new List<LocationViewModel>();
-            string offset = "0.5";
-            //var datetime = DateTime.Now;
-            string datetime = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss.ff");
-            //var datetime = "2020-11-11 19:00:00.00";
-            string near_me = string.Format("select e.*, l.City, l.Adresse, l.latitude, l.longitude from [Event] as e left join [Location] as l on l.LocationID = e.IDLocation where l.longitude < {0} + {1} and l.latitude < {2} + {3} and l.longitude > {4} - {5} and l.latitude > {6} - {7} and e.Starting >= '{8}' order by e.Starting desc", longitude2, offset, latitude2, offset, longitude2, offset, latitude2, offset, datetime);
-            using (SqlConnection conn = new SqlConnection("data source=DESKTOP-VKPMS9H;initial catalog=EventPlannerDB;integrated security=True;multipleactiveresultsets=True"))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(near_me, conn))
-                {
-                    using (var rd = cmd.ExecuteReader())
-                    {
-                        while (rd.Read())
-                        {
-                            var _event = new EventViewModel();
-                            _event.EventID = rd.GetInt32(rd.GetOrdinal("EventID"));
-                            _event.Title = rd.GetString(rd.GetOrdinal("Title"));
-                            _event.Starting = rd.GetDateTime(rd.GetOrdinal("Starting"));
-                            _event.Ending = rd.GetDateTime(rd.GetOrdinal("Ending"));
-                            _event.Info = rd.GetString(rd.GetOrdinal("Info"));
-                            _event.City = rd.GetString(rd.GetOrdinal("City"));
-                            _event.Adresse = rd.GetString(rd.GetOrdinal("Adresse"));
-
-                            events.Add(_event);                        }
-                    }
-                }
                 conn.Close();
-
-
-                return Ok(events);
             }
-        }
-
-
-        //GET: api/Event/5
-        [Route("api/event/{idevent}")]
-        [HttpGet]
-        public IHttpActionResult GetEvent(int? idevent)
-        {
-            EventViewModel eventModel = null;
-
             using (db)
             {
+                IList<GoingViewModel> goings = null;
+                goings = db.Going
+                    .Where(t => t.IDEvent == idevent.EventID && t.IDUser == idevent.IDUser)
+                    .Include("Event")
+                    .Select(t => new GoingViewModel()
+                    {
+                        IDUser = t.IDUser,
+                        IDEvent = t.IDEvent
+
+                    }).ToList<GoingViewModel>();
+
+                if (!goings.Any())
+                {
+                    am_going = false;
+                }
 
                 eventModel = db.Event
                     .Include("Location")
                     .Include("Ticket")
                     .Include("Going")
-                    .Where(e => e.EventID == idevent)
-                    .Select(e => new EventViewModel()
+                    .Where(ev => ev.EventID == idevent.EventID)
+                    .Select(ev => new EventViewModel()
                     {
-                        EventID = e.EventID,
-                        Title = e.Title,
-                        Starting = e.Starting,
-                        Ending = e.Ending,
-                        Info = e.Info,
-                        Location = e.Location,
-                        Ticket = e.Ticket,
-                        NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
+                        EventID = ev.EventID,
+                        Title = ev.Title,
+                        Starting = ev.Starting,
+                        Ending = ev.Ending,
+                        Ticket = ev.Ticket,
+                        Adresse = ev.Adresse,
+                        latitude = ev.latitude,
+                        longitude = ev.longitude,
+                        NumberOfGoing = count,
+                        IsLoginUserGoing = am_going,
+                        IDUser = ev.IDUser
 
                     }).FirstOrDefault<EventViewModel>();
             }
@@ -170,28 +183,28 @@ namespace EventPlannerApi.Controllers
 
 
         [ResponseType(typeof(Event))]
-        [Route("api/event/userid")]
-        public IHttpActionResult GetEventByUserID(UserViewModel user)
+        [Route("api/event")]
+        public IHttpActionResult GetEventByUserID(int id)
         {
             IList<EventViewModel> eventModel = null;
-
             using (db)
             {
                 eventModel = db.Event
                     .Include("Location")
                     .Include("Ticket")
                     .Include("Going")
-                    .Where(e => e.IDUser == user.UserID)
+                    .Where(e => e.IDUser ==id)
                     .Select(e => new EventViewModel()
                     {
                         EventID = e.EventID,
                         Title = e.Title,
                         Starting = e.Starting,
                         Ending = e.Ending,
-                        Info = e.Info,
-                        Location = e.Location,
-                        Ticket = e.Ticket,
-                        NumberOfGoing = e.Going.Count // number of going (number of id's in going table where EventID = id) to the event
+                        Adresse = e.Adresse,
+                        IDUser = e.IDUser,
+                        longitude = e.longitude,
+                        latitude = e.latitude,
+                        Ticket = e.Ticket
 
                     }).ToList<EventViewModel>();
             }
@@ -208,7 +221,7 @@ namespace EventPlannerApi.Controllers
 
 
         // PUT: api/Event/5
-        [ResponseType(typeof(void))]
+        [Route("api/event/update")]
         public IHttpActionResult PutEvent(EventViewModel @event)
         {
             if (!ModelState.IsValid)
@@ -219,14 +232,16 @@ namespace EventPlannerApi.Controllers
                 var existingEvent = db.Event.Where(e => e.EventID == @event.EventID)
                                                         .FirstOrDefault<Event>();
 
+
+
                 if (existingEvent != null)
                 {
                     existingEvent.Title = @event.Title;
                     existingEvent.Starting = @event.Starting;
                     existingEvent.Ending = @event.Ending;
-                    existingEvent.Info = @event.Info;
-                    existingEvent.Location = @event.Location;
-                    existingEvent.Ticket = @event.Ticket;
+                    existingEvent.Adresse = @event.Adresse;
+                    existingEvent.longitude = @event.longitude;
+                    existingEvent.latitude = @event.latitude;
 
                     db.SaveChanges();
                 }
@@ -242,23 +257,25 @@ namespace EventPlannerApi.Controllers
         //POST: api/Event
         [ResponseType(typeof(Event))]
         [Route("api/event/create")]
-        public IHttpActionResult PostNewEvent([FromBody]EventViewModel eventModel)
+        public IHttpActionResult PostNewEvent(EventViewModel eventModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
+
             using (db)
             {
+
                 db.Event.Add(new Event()
                 {
                     Title = eventModel.Title,
                     Starting = eventModel.Starting,
                     Ending = eventModel.Ending,
-                    Info = eventModel.Info,
-                    City = eventModel.City,
+                    IDUser = eventModel.IDUser,
+                    IDTicket = 1,
                     Adresse = eventModel.Adresse,
-                    Location = eventModel.Location,
-                    Ticket = eventModel.Ticket
+                    latitude = eventModel.latitude,
+                    longitude = eventModel.longitude
 
                 });
 
@@ -271,8 +288,8 @@ namespace EventPlannerApi.Controllers
         // DELETE: api/Event/5
         //[ResponseType(typeof(Event))]
         [HttpDelete]
-        [Route("api/event/delete/{id}")]
-        public IHttpActionResult DeleteEvent(int id)
+        [Route("api/event/delete")]
+        public IHttpActionResult DeleteEvent(EventViewModel _event)
         {
             //if (id <= 0)
             //    return BadRequest("Not a valid student id");
@@ -291,7 +308,7 @@ namespace EventPlannerApi.Controllers
             {
                 db.Database.ExecuteSqlCommand(
                     "Exec delete_event @eventid",
-                    new SqlParameter("@eventid", id
+                    new SqlParameter("@eventid", _event.EventID
                     ));
             }
 

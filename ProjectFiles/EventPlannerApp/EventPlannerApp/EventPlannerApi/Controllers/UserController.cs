@@ -15,7 +15,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "http://localhost:19006", headers: "*", methods: "GET, POST, DELETE")]
+    [EnableCors(origins: "*", headers: "Content-Type", methods: "GET, POST, DELETE")]
     public class UserController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();
@@ -108,13 +108,13 @@ namespace EventPlannerApi.Controllers
             return Ok(user);
         }
 
-
         [HttpPost]
         [Route("api/user/login")]
         //public IHttpActionResult PostUserLoginData(string email, string password)
         public IHttpActionResult PostUserLoginData(UserViewModel user)
         {
             UserViewModel user_r = null;
+            InvalidLoginValidation invalidLoginValidation = new InvalidLoginValidation();
             using (db)
             {
                 user_r = db.User
@@ -131,7 +131,7 @@ namespace EventPlannerApi.Controllers
                         Info = u.Info,
                         AdminUser = u.AdminUser,
                         AvailableFunds = u.AvailableFunds == null ? null : new AvailableFundsViewModel() //if it has none it joins nothing, if it has it joins available emoney
-                        {
+                    {
                             AvailableFundsID = u.AvailableFunds.AvailableFundsID,
                             AvailableMoney = u.AvailableFunds.AvailableMoney
                         },
@@ -144,9 +144,13 @@ namespace EventPlannerApi.Controllers
             }
             if (user_r == null)
             {
-                return NotFound();
+                invalidLoginValidation.is_valid_login = "nije ni true ni false";
+                return Ok(invalidLoginValidation);
             }
+
+
             return Ok(user_r);
+            
         }
 
 
@@ -193,7 +197,7 @@ namespace EventPlannerApi.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
-
+            UserViewModel user_r = null;
             using (db)
             {
                     db.User.Add(new User()
@@ -210,8 +214,33 @@ namespace EventPlannerApi.Controllers
                 });
 
                 db.SaveChanges();
+
+                user_r = db.User
+                    .Where(u => u.Email == user.Email && u.Password == user.Password)
+                    .Select(u => new UserViewModel()
+                    {
+                        UserID = u.UserID,
+                        Email = u.Email,
+                        Password = u.Password,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        Age = u.Age,
+                        IBAN = u.IBAN,
+                        Info = u.Info,
+                        AdminUser = u.AdminUser,
+                        AvailableFunds = u.AvailableFunds == null ? null : new AvailableFundsViewModel() //if it has none it joins nothing, if it has it joins available emoney
+                        {
+                            AvailableFundsID = u.AvailableFunds.AvailableFundsID,
+                            AvailableMoney = u.AvailableFunds.AvailableMoney
+                        },
+                        CreditCard = u.CreditCard == null ? null : new CreditCardViewModel()
+                        {
+                            CreditCardID = u.CreditCard.CreditCardID,
+                            CardName = u.CreditCard.CardName
+                        }
+                    }).FirstOrDefault<UserViewModel>();
             }
-            return Ok();
+            return Ok(user_r);
         }
 
         // DELETE: api/User/5

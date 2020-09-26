@@ -32,7 +32,6 @@ namespace EventPlannerApi.Models
         public virtual DbSet<CreditCard> CreditCard { get; set; }
         public virtual DbSet<Event> Event { get; set; }
         public virtual DbSet<Going> Going { get; set; }
-        public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<Ticket> Ticket { get; set; }
         public virtual DbSet<Transaction> Transaction { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -84,6 +83,24 @@ namespace EventPlannerApi.Models
                 new ObjectParameter("lat", typeof(decimal));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<near_me_Result>("near_me", datetimeParameter, offsetParameter, longParameter, latParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> delete_event1(Nullable<int> eventid)
+        {
+            var eventidParameter = eventid.HasValue ?
+                new ObjectParameter("eventid", eventid) :
+                new ObjectParameter("eventid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("delete_event1", eventidParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> delete_user1(Nullable<int> userid)
+        {
+            var useridParameter = userid.HasValue ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("delete_user1", useridParameter);
         }
     }
 }

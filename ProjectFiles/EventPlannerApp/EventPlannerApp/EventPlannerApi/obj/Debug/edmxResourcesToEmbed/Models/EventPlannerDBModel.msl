@@ -20,15 +20,14 @@
     <EntitySetMapping Name="Event">
       <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Event)">
         <MappingFragment StoreEntitySet="Event">
+          <ScalarProperty Name="latitude" ColumnName="latitude" />
+          <ScalarProperty Name="longitude" ColumnName="longitude" />
           <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-          <ScalarProperty Name="City" ColumnName="City" />
           <ScalarProperty Name="EventID" ColumnName="EventID" />
           <ScalarProperty Name="Title" ColumnName="Title" />
           <ScalarProperty Name="Starting" ColumnName="Starting" />
           <ScalarProperty Name="Ending" ColumnName="Ending" />
-          <ScalarProperty Name="Info" ColumnName="Info" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
-          <ScalarProperty Name="IDLocation" ColumnName="IDLocation" />
           <ScalarProperty Name="IDTicket" ColumnName="IDTicket" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -39,17 +38,6 @@
           <ScalarProperty Name="GoingID" ColumnName="GoingID" />
           <ScalarProperty Name="IDUser" ColumnName="IDUser" />
           <ScalarProperty Name="IDEvent" ColumnName="IDEvent" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Location">
-      <EntityTypeMapping TypeName="IsTypeOf(EventPlannerDBModel.Location)">
-        <MappingFragment StoreEntitySet="Location">
-          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Adresse" ColumnName="Adresse" />
-          <ScalarProperty Name="longitude" ColumnName="longitude" />
-          <ScalarProperty Name="latitude" ColumnName="latitude" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -109,5 +97,7 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="delete_event1" FunctionName="EventPlannerDBModel.Store.delete_event" />
+    <FunctionImportMapping FunctionImportName="delete_user1" FunctionName="EventPlannerDBModel.Store.delete_user" />
   </EntityContainerMapping>
 </Mapping>

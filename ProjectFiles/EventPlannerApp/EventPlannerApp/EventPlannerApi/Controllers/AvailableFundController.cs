@@ -13,7 +13,7 @@ using EventPlannerApi.Models;
 
 namespace EventPlannerApi.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "Content-Type", methods: "GET, POST, PUT, DELETE")]
     public class AvailableFundController : ApiController
     {
         private EventPlannerDBEntities db = new EventPlannerDBEntities();

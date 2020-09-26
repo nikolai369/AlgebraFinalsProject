@@ -24,16 +24,14 @@
     <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="Starting" Type="DateTime" Precision="2" />
     <Property Name="Ending" Type="DateTime" Precision="2" />
-    <Property Name="Info" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
     <Property Name="IDUser" Type="Int32" />
-    <Property Name="IDLocation" Type="Int32" />
     <Property Name="IDTicket" Type="Int32" />
-    <NavigationProperty Name="Location" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Event" ToRole="Location" />
     <NavigationProperty Name="Ticket" Relationship="Self.FK__Event__IDTicket__35BCFE0A" FromRole="Event" ToRole="Ticket" />
     <NavigationProperty Name="User" Relationship="Self.FK__Event__IDUser__33D4B598" FromRole="Event" ToRole="User" />
     <NavigationProperty Name="Going" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Event" ToRole="Going" />
-    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Adresse" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
+    <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
   </EntityType>
   <EntityType Name="Going">
     <Key>
@@ -44,17 +42,6 @@
     <Property Name="IDEvent" Type="Int32" />
     <NavigationProperty Name="Event" Relationship="Self.FK__Going__IDEvent__398D8EEE" FromRole="Going" ToRole="Event" />
     <NavigationProperty Name="User" Relationship="Self.FK__Going__IDUser__38996AB5" FromRole="Going" ToRole="User" />
-  </EntityType>
-  <EntityType Name="Location">
-    <Key>
-      <PropertyRef Name="LocationID" />
-    </Key>
-    <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="City" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-    <Property Name="Adresse" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Event" Relationship="Self.FK__Event__IDLocatio__34C8D9D1" FromRole="Location" ToRole="Event" />
-    <Property Name="longitude" Type="Decimal" Precision="9" Scale="6" />
-    <Property Name="latitude" Type="Decimal" Precision="8" Scale="6" />
   </EntityType>
   <EntityType Name="Ticket">
     <Key>
@@ -120,18 +107,6 @@
       </Principal>
       <Dependent Role="User">
         <PropertyRef Name="IDCreditCard" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Event__IDLocatio__34C8D9D1">
-    <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
-    <End Role="Event" Type="Self.Event" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Location">
-        <PropertyRef Name="LocationID" />
-      </Principal>
-      <Dependent Role="Event">
-        <PropertyRef Name="IDLocation" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -212,7 +187,6 @@
     <EntitySet Name="CreditCard" EntityType="Self.CreditCard" />
     <EntitySet Name="Event" EntityType="Self.Event" />
     <EntitySet Name="Going" EntityType="Self.Going" />
-    <EntitySet Name="Location" EntityType="Self.Location" />
     <EntitySet Name="Ticket" EntityType="Self.Ticket" />
     <EntitySet Name="Transaction" EntityType="Self.Transaction" />
     <EntitySet Name="User" EntityType="Self.User" />
@@ -223,10 +197,6 @@
     <AssociationSet Name="FK__User__IDCreditCa__286302EC" Association="Self.FK__User__IDCreditCa__286302EC">
       <End Role="CreditCard" EntitySet="CreditCard" />
       <End Role="User" EntitySet="User" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Event__IDLocatio__34C8D9D1" Association="Self.FK__Event__IDLocatio__34C8D9D1">
-      <End Role="Location" EntitySet="Location" />
-      <End Role="Event" EntitySet="Event" />
     </AssociationSet>
     <AssociationSet Name="FK__Event__IDTicket__35BCFE0A" Association="Self.FK__Event__IDTicket__35BCFE0A">
       <End Role="Ticket" EntitySet="Ticket" />
@@ -265,6 +235,12 @@
       <Parameter Name="offset" Mode="In" Type="Double" />
       <Parameter Name="long" Mode="In" Type="Decimal" />
       <Parameter Name="lat" Mode="In" Type="Decimal" />
+    </FunctionImport>
+    <FunctionImport Name="delete_event1" ReturnType="Collection(Int32)">
+      <Parameter Name="eventid" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="delete_user1" ReturnType="Collection(Int32)">
+      <Parameter Name="userid" Mode="In" Type="Int32" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="near_me_Result">

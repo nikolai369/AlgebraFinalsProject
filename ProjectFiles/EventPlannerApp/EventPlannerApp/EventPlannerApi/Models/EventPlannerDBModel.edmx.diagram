@@ -7,15 +7,13 @@
       <Diagram DiagramId="df6f7b3ec95747a6ad6bf7d489231c16" Name="Diagram1">
         <EntityTypeShape EntityType="EventPlannerDBModel.AvailableFunds" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.CreditCard" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="EventPlannerDBModel.Event" Width="1.5" PointX="5.25" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventPlannerDBModel.Event" Width="1.5" PointX="5.125" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.Going" Width="1.5" PointX="7.5" PointY="2" IsExpanded="true" />
-        <EntityTypeShape EntityType="EventPlannerDBModel.Location" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.Ticket" Width="1.5" PointX="1.875" PointY="8.625" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.Transaction" Width="1.5" PointX="8.25" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="EventPlannerDBModel.User" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <AssociationConnector Association="EventPlannerDBModel.FK__User__IDAvailabl__29572725" ManuallyRouted="false" />
         <AssociationConnector Association="EventPlannerDBModel.FK__User__IDCreditCa__286302EC" ManuallyRouted="false" />
-        <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDLocatio__34C8D9D1" ManuallyRouted="false" />
         <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDTicket__35BCFE0A" ManuallyRouted="false" />
         <AssociationConnector Association="EventPlannerDBModel.FK__Event__IDUser__33D4B598" ManuallyRouted="false" />
         <AssociationConnector Association="EventPlannerDBModel.FK__Going__IDEvent__398D8EEE" ManuallyRouted="false" />

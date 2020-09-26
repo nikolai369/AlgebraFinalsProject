@@ -14,9 +14,15 @@ namespace EventPlannerApi.Models
         public string City { get; set; }
         public string Adresse { get; set; }
 
+        public bool IsLoginUserGoing { get; set; }
+
+        public Nullable<int> IDUser { get; set; }
+
+
+        public Nullable<decimal> longitude { get; set; }
+        public Nullable<decimal> latitude { get; set; }
         public int NumberOfGoing { get; set; }
 
-        public Location Location { get; set; }
         public Ticket Ticket { get; set; }
         public  User User { get; set; }
         public ICollection<Going> Going { get; set; }
